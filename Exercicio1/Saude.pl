@@ -11,6 +11,8 @@
 :- set_prolog_flag( single_var_warnings,off ).
 :- set_prolog_flag( unknown,fail ).
 
+:- dynamic utente/4.
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado utente: IdUt,Nome,Idade,Cidade-> {V,F}
 
@@ -64,3 +66,45 @@ consulta( DA,IU,IS,C ).
 % Extensao do predicado cidade: IdUt,Cidade-> {V,F}
 
 utente_cidade(IU,C).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Inserir Termo : T -> {V,F}
+
+  inserir(T) :- assert(T).
+  inserir(T) :- retract(T), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Termo : T -> {V,F}
+  
+  remover(T) :- retract(T).
+  remover(T) :- assert(T), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Registar Utente : IdUt,Nome,Idade,Cidade-> {V,F}
+
+  registarU( IU,N,I,C ) :-
+    inserir(utente( IU,N,I,C )).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Registar Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
+  
+  registarServ(IS,D,I,C) :-
+    inserir(servico( IS,D,I,C )).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Registar Consulta : Data,IdUt,IdServ,Custo -> {V,F}
+
+  registarConsulta( DA,IU,IS,C ) :-
+    inserir(consulta( DA,IU,IS,C )).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Utente : IdUt,Nome,Idade,Cidade-> {V,F}
+
+  removerU( IU,N,I,C ) :-
+    remover(utente( IU,N,I,C )).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
+  
+  removerServ(IS,D,I,C) :-
+    remover(servico( IS,D,I,C )).
