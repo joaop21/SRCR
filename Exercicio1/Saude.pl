@@ -43,21 +43,21 @@ servico( IS,D,I,CI ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado consul: Data,IdUt,IdServ,Custo-> {V,F}
+% Extensao do predicado consulta: Data,IdUt,IdServ,Custo-> {V,F}
 
-consul(01-02-2019, 1, 6, 25).
-consul(13-02-2019, 3, 4, 30).
-consul(13-02-2019, 5, 5, 35).
-consul(14-02-2019, 2, 7, 9).
-consul(20-02-2019, 7, 2, 20).
-consul(23-02-2019, 7, 8, 5).
-consul(23-02-2019, 5, 5, 24).
-consul(25-02-2019, 6, 7, 40).
-consul(29-02-2019, 7, 2, 65).
-consul(04-03-2019, 9, 2, 95).
-consul(07-03-2019, 1, 1, 10).
+consulta(01-02-2019, 1, 6, 25).
+consulta(13-02-2019, 3, 4, 30).
+consulta(13-02-2019, 5, 5, 35).
+consulta(14-02-2019, 2, 7, 9).
+consulta(20-02-2019, 7, 2, 20).
+consulta(23-02-2019, 7, 8, 5).
+consulta(23-02-2019, 5, 5, 24).
+consulta(25-02-2019, 6, 7, 40).
+consulta(29-02-2019, 7, 2, 65).
+consulta(04-03-2019, 9, 2, 95).
+consulta(07-03-2019, 1, 1, 10).
 
-consul( DA,IU,IS,C ).
+consulta( DA,IU,IS,C ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
