@@ -11,6 +11,9 @@
 :- set_prolog_flag( single_var_warnings,off ).
 :- set_prolog_flag( unknown,fail ).
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% SICStus PROLOG: Definicoes iniciais
+
 :- dynamic utente/4.
 :- dynamic servico/4.
 :- dynamic consulta/4.
@@ -30,8 +33,6 @@ utente(8,andre,26,amares).
 utente(9,henrique,14,fafe).
 utente(10,diogo,14,braga).
 
-utente( IU,N,A,CI ).
-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado serviço: IdServ,Descrição,Instituição,Cidade -> {V,F}
@@ -43,8 +44,6 @@ servico(4,neurologia,hsj,porto).
 servico(5,ginecologia,hospitalbraga,braga).
 servico(6,psiquiatria,hsog,guimaraes).
 servico(7,oftamologia,hsog,guimaraes).
-
-servico( IS,D,I,CI ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -62,25 +61,15 @@ consulta(29-02-2019, 7, 2, 65).
 consulta(04-03-2019, 9, 2, 95).
 consulta(07-03-2019, 1, 1, 10).
 
-consulta( DA,IU,IS,C ).
-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado cidade: IdUt,Cidade-> {V,F}
 
-utente_cidade(IU,C).
+%utente_cidade(IU,C).
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Inserir Termo : T -> {V,F}
 
-  inserir(T) :- assert(T).
-  inserir(T) :- retract(T), !, fail.
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Remover Termo : T -> {V,F}
-
-  remover(T) :- retract(T).
-  remover(T) :- assert(T), !, fail.
+%--------------------------PONTO 1--------------------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Utente : IdUt,Nome,Idade,Cidade-> {V,F}
@@ -100,6 +89,10 @@ utente_cidade(IU,C).
   registarConsulta( DA,IU,IS,C ) :-
     inserir(consulta( DA,IU,IS,C )).
 
+
+
+%--------------------------PONTO 2--------------------------%
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
@@ -117,3 +110,48 @@ utente_cidade(IU,C).
 
   removerConsulta( DA,IU,IS,C ) :-
     remover(consulta( DA,IU,IS,C )).
+
+
+
+
+%--------------------------PONTO 3--------------------------%
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado instituicoes: Resultado -> {V,F}
+
+instituicoes(R) :-
+    findall(INST, servico(IDC,DESC,INST,CD), LR),
+    removeReps(LR,R).
+
+
+%--------------------------PREDICADOS AUXILIARES--------------------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Inserir Termo : T -> {V,F}
+
+  inserir(T) :- assert(T).
+  inserir(T) :- retract(T), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Termo : T -> {V,F}
+
+  remover(T) :- retract(T).
+  remover(T) :- assert(T), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removeReps: L,R -> {V,F}
+
+removeReps([], []).
+removeReps([H|T], R) :-
+    member(H,T),
+	removeReps(T, R).
+removeReps([H|T],[H|R]) :-
+    nao(member(H,T)),
+    removeReps(T,R).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado nao: T -> {V,F}
+
+nao(T) :-
+    T, !, fail.
+nao(T).
