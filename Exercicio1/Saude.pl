@@ -113,7 +113,6 @@ consulta(07-03-2019, 1, 1, 10).
 
 
 
-
 %--------------------------PONTO 3--------------------------%
 
 % ----------------------------------------------------------------------------------------------------
@@ -122,6 +121,53 @@ consulta(07-03-2019, 1, 1, 10).
 instituicoes(R) :-
     findall(INST, servico(IDC,DESC,INST,CD), LR),
     removeReps(LR,R).
+
+
+
+%--------------------------PONTO 4--------------------------%
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado utentesPNome: Nome, Resultado -> {V,F}
+
+utentesPNome(Nome,R) :-
+    findall( (IU,Nome,I,C), utente(IU,Nome,I,C), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado utentesPIdade: Idade, Resultado -> {V,F}
+
+utentesPIdade(Idade,R) :-
+    findall( (IU,N,Idade,C), utente(IU,N,Idade,C), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado utentesPCidade: Cidade, Resultado -> {V,F}
+
+utentesPCidade(Cidade,R) :-
+    findall( (IU,N,I,Cidade), utente(IU,N,I,Cidade), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado servicosPDesc: Descrição, Resultado -> {V,F}
+
+servicosPDesc(Descricao,R) :-
+    findall( (IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado servicosPInst: Instituição, Resultado -> {V,F}
+
+servicosPInst(Instituicao,R) :-
+    findall( (IS,D,Instituicao,C), servico( IS,D,Instituicao,C ), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado servicosPCidade: Cidade, Resultado -> {V,F}
+
+servicosPCidade(Cidade,R) :-
+    findall( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado consultasPData: Data, Resultado -> {V,F}
+
+consultasPData(Data,R) :-
+    findall( Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
+
 
 
 %--------------------------PREDICADOS AUXILIARES--------------------------%
