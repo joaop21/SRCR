@@ -75,7 +75,7 @@ utente_cidade(IU,C).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Termo : T -> {V,F}
-  
+
   remover(T) :- retract(T).
   remover(T) :- assert(T), !, fail.
 
@@ -87,7 +87,7 @@ utente_cidade(IU,C).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
-  
+
   registarServ(IS,D,I,C) :-
     inserir(servico( IS,D,I,C )).
 
@@ -105,6 +105,12 @@ utente_cidade(IU,C).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
-  
+
   removerServ(IS,D,I,C) :-
     remover(servico( IS,D,I,C )).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Consulta : Data,IdUt,IdServ,Custo -> {V,F}
+
+  removerConsulta( DA,IU,IS,C ) :-
+    remover(consulta( DA,IU,IS,C )).
