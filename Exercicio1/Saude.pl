@@ -12,6 +12,9 @@
 :- set_prolog_flag( unknown,fail ).
 
 :- dynamic utente/4.
+:- dynamic servico/4.
+:- dynamic consulta/4.
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado utente: IdUt,Nome,Idade,Cidade-> {V,F}
