@@ -151,6 +151,16 @@ servicosPDesc(Descricao,R) :-
     findall( (IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
 
 % ----------------------------------------------------------------------------------------------------
+% Extensao do predicado consultasPData: Data, Resultado -> {V,F}
+
+consultasPData(Data,R) :-
+    findall( Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
+
+
+
+%--------------------------PONTO 5--------------------------%
+
+% ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPInst: Instituição, Resultado -> {V,F}
 
 servicosPInst(Instituicao,R) :-
@@ -161,12 +171,6 @@ servicosPInst(Instituicao,R) :-
 
 servicosPCidade(Cidade,R) :-
     findall( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
-
-% ----------------------------------------------------------------------------------------------------
-% Extensao do predicado consultasPData: Data, Resultado -> {V,F}
-
-consultasPData(Data,R) :-
-    findall( Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
 
 
 
