@@ -39,16 +39,15 @@ utente(10,diogo,14,braga).
 %                         repetido
 
 +utente( IU,_,_,_ ) :: (solucoes( IU,(utente( IU,_,_,_ )),S ),
-                  comprimento( S,L ),
-				          L == 1).
+                        comprimento( S,L ),
+				        L == 1).
 
-% Referencial ????????????????
-% Invariante Referencial: a idade de cada utente tem de ser inteira e
+% Invariante Estrutural: a idade de cada utente tem de ser inteira e
 %             estar no intervalo [0,120]
 
 +utente( _,_,I,_ ) :: (integer(I),
-                      I >= 0,
-                      I =< 120).
+                       I >= 0,
+                       I =< 120).
 
 
 
@@ -68,8 +67,8 @@ servico(7,oftamologia,hsog,guimaraes).
 %                         repetido
 
 +servico( IS,_,_,_ ) :: (solucoes( IS,(servico( IS,_,_,_ )),S ),
-                  comprimento( S,L ),
-				          L == 1).
+                         comprimento( S,L ),
+				         L == 1).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -93,19 +92,19 @@ consulta(07-03-2019, 1, 1, 10).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
-  registarU( IU,N,I,C ) :-
+registarU( IU,N,I,C ) :-
     evolucao(utente( IU,N,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
 
-  registarServ( IS,D,I,C ) :-
+registarServ( IS,D,I,C ) :-
     evolucao(servico( IS,D,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Consulta : Data,IdUt,IdServ,Custo -> {V,F}
 
-  registarConsulta( DA,IU,IS,C ) :-
+registarConsulta( DA,IU,IS,C ) :-
     evolucao(consulta( DA,IU,IS,C )).
 
 
@@ -115,19 +114,19 @@ consulta(07-03-2019, 1, 1, 10).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
-  removerU( IU,N,I,C ) :-
+removerU( IU,N,I,C ) :-
     regressao(utente( IU,N,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
 
-  removerServ(IS,D,I,C) :-
+removerServ(IS,D,I,C) :-
     regressao(servico( IS,D,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Consulta : Data,IdUt,IdServ,Custo -> {V,F}
 
-  removerConsulta( DA,IU,IS,C ) :-
+removerConsulta( DA,IU,IS,C ) :-
     regressao(consulta( DA,IU,IS,C )).
 
 
@@ -199,9 +198,9 @@ servicosPCidade(Cidade,R) :-
 % Extensão do predicado que permite a evolucao do conhecimento
 
 evolucao( Termo ) :-
-  solucoes( Invariante,+Termo::Invariante,Lista ),
-  insercao( Termo ),
-  teste( Lista ).
+    solucoes( Invariante,+Termo::Invariante,Lista ),
+    insercao( Termo ),
+    teste( Lista ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado que permite a regressão do conhecimento
@@ -210,45 +209,49 @@ regressao(Termo) :-
 	Termo,
 	solucoes( Invariante,-Termo::Invariante,Lista ),
 	remover( Termo ),
-  teste( Lista ).
+    teste( Lista ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite encontrar as provas
 
-solucoes(F,Q,S) :- Q, assert(tmp(F)), fail.
-solucoes(F,Q,S) :- construir(S,[]).
+solucoes(F,Q,S) :-
+    Q, assert(tmp(F)), fail.
+solucoes(F,Q,S) :-
+    construir(S,[]).
 
-construir(S1,S2) :- retract(tmp(X)), !, construir(S1, [X|S2]).
+construir(S1,S2) :-
+    retract(tmp(X)), !,
+    construir(S1, [X|S2]).
 construir(S,S).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção do conhecimento
 insercao( Termo ) :-
-  assert( Termo ).
+    assert( Termo ).
 insercao( Termo ) :-
-  retract( Termo ), !, fail.
+    retract( Termo ), !, fail.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a remoção do conhecimento
 remover(Termo) :-
-  retract(Termo).
+    retract(Termo).
 remover(Termo) :-
-  assert(Termo), !, fail.
+    assert(Termo), !, fail.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que realiza o teste do conhecimento
 teste([]).
 teste([R|LR]) :-
-  R,
-  teste(LR).
+    R,
+    teste(LR).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado comprimento: L,N -> {V,F}
 
 comprimento([], 0).
 comprimento([H|T], N) :-
-  comprimento(T,S),
-  N is S+1.
+    comprimento(T,S),
+    N is S+1.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removeReps: L,R -> {V,F}
