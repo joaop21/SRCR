@@ -14,6 +14,7 @@
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: Definicoes iniciais
 
+:- op( 900,xfy,'::' ).
 :- dynamic utente/4.
 :- dynamic servico/4.
 :- dynamic consulta/4.
@@ -34,6 +35,23 @@ utente(9,henrique,14,fafe).
 utente(10,diogo,14,braga).
 
 
+% Invariante Estrutural:  nao permitir a insercao de conhecimento
+%                         repetido
+
++utente( IU,_,_,_ ) :: (solucoes( IU,(utente( IU,_,_,_ )),S ),
+                  comprimento( S,L ),
+				          L == 1).
+
+% Referencial ????????????????
+% Invariante Referencial: a idade de cada utente tem de ser inteira e
+%             estar no intervalo [0,120]
+
++utente( _,_,I,_ ) :: (integer(I),
+                      I >= 0,
+                      I =< 120).
+
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado serviço: IdServ,Descrição,Instituição,Cidade -> {V,F}
 
@@ -44,6 +62,14 @@ servico(4,neurologia,hsj,porto).
 servico(5,ginecologia,hospitalbraga,braga).
 servico(6,psiquiatria,hsog,guimaraes).
 servico(7,oftamologia,hsog,guimaraes).
+
+
+% Invariante Estrutural:  nao permitir a insercao de conhecimento
+%                         repetido
+
++servico( IS,_,_,_ ) :: (solucoes( IS,(servico( IS,_,_,_ )),S ),
+                  comprimento( S,L ),
+				          L == 1).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -62,32 +88,25 @@ consulta(04-03-2019, 9, 2, 95).
 consulta(07-03-2019, 1, 1, 10).
 
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado cidade: IdUt,Cidade-> {V,F}
-
-%utente_cidade(IU,C).
-
-
-
 %--------------------------PONTO 1--------------------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
   registarU( IU,N,I,C ) :-
-    inserir(utente( IU,N,I,C )).
+    evolucao(utente( IU,N,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
 
-  registarServ(IS,D,I,C) :-
-    inserir(servico( IS,D,I,C )).
+  registarServ( IS,D,I,C ) :-
+    evolucao(servico( IS,D,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Consulta : Data,IdUt,IdServ,Custo -> {V,F}
 
   registarConsulta( DA,IU,IS,C ) :-
-    inserir(consulta( DA,IU,IS,C )).
+    evolucao(consulta( DA,IU,IS,C )).
 
 
 
@@ -97,19 +116,19 @@ consulta(07-03-2019, 1, 1, 10).
 % Remover Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
   removerU( IU,N,I,C ) :-
-    remover(utente( IU,N,I,C )).
+    regressao(utente( IU,N,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
 
   removerServ(IS,D,I,C) :-
-    remover(servico( IS,D,I,C )).
+    regressao(servico( IS,D,I,C )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Consulta : Data,IdUt,IdServ,Custo -> {V,F}
 
   removerConsulta( DA,IU,IS,C ) :-
-    remover(consulta( DA,IU,IS,C )).
+    regressao(consulta( DA,IU,IS,C )).
 
 
 
@@ -119,7 +138,7 @@ consulta(07-03-2019, 1, 1, 10).
 % Extensao do predicado instituicoes: Resultado -> {V,F}
 
 instituicoes(R) :-
-    findall(INST, servico(IDC,DESC,INST,CD), LR),
+    solucoes(INST, servico(IDC,DESC,INST,CD), LR),
     removeReps(LR,R).
 
 
@@ -130,31 +149,31 @@ instituicoes(R) :-
 % Extensao do predicado utentesPNome: Nome, Resultado -> {V,F}
 
 utentesPNome(Nome,R) :-
-    findall( (IU,Nome,I,C), utente(IU,Nome,I,C), R).
+    solucoes( (IU,Nome,I,C), utente(IU,Nome,I,C), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado utentesPIdade: Idade, Resultado -> {V,F}
 
 utentesPIdade(Idade,R) :-
-    findall( (IU,N,Idade,C), utente(IU,N,Idade,C), R).
+    solucoes( (IU,N,Idade,C), utente(IU,N,Idade,C), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado utentesPCidade: Cidade, Resultado -> {V,F}
 
 utentesPCidade(Cidade,R) :-
-    findall( (IU,N,I,Cidade), utente(IU,N,I,Cidade), R).
+    solucoes( (IU,N,I,Cidade), utente(IU,N,I,Cidade), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPDesc: Descrição, Resultado -> {V,F}
 
 servicosPDesc(Descricao,R) :-
-    findall( (IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
+    solucoes( (IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado consultasPData: Data, Resultado -> {V,F}
 
 consultasPData(Data,R) :-
-    findall( Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
+    solucoes( (Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
 
 
 
@@ -164,29 +183,72 @@ consultasPData(Data,R) :-
 % Extensao do predicado servicosPInst: Instituição, Resultado -> {V,F}
 
 servicosPInst(Instituicao,R) :-
-    findall( (IS,D,Instituicao,C), servico( IS,D,Instituicao,C ), R).
+    solucoes( (IS,D,Instituicao,C), servico( IS,D,Instituicao,C ), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPCidade: Cidade, Resultado -> {V,F}
 
 servicosPCidade(Cidade,R) :-
-    findall( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
+    solucoes( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
 
 
 
 %--------------------------PREDICADOS AUXILIARES--------------------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Inserir Termo : T -> {V,F}
+% Extensão do predicado que permite a evolucao do conhecimento
 
-  inserir(T) :- assert(T).
-  inserir(T) :- retract(T), !, fail.
+evolucao( Termo ) :-
+  solucoes( Invariante,+Termo::Invariante,Lista ),
+  insercao( Termo ),
+  teste( Lista ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Remover Termo : T -> {V,F}
+% Extensao do predicado que permite a regressão do conhecimento
 
-  remover(T) :- retract(T).
-  remover(T) :- assert(T), !, fail.
+regressao(Termo) :-
+	Termo,
+	solucoes( Invariante,-Termo::Invariante,Lista ),
+	remover( Termo ),
+  teste( Lista ).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite encontrar as provas
+
+solucoes(F,Q,S) :- Q, assert(tmp(F)), fail.
+solucoes(F,Q,S) :- construir(S,[]).
+
+construir(S1,S2) :- retract(tmp(X)), !, construir(S1, [X|S2]).
+construir(S,S).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a inserção do conhecimento
+insercao( Termo ) :-
+  assert( Termo ).
+insercao( Termo ) :-
+  retract( Termo ), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a remoção do conhecimento
+remover(Termo) :-
+  retract(Termo).
+remover(Termo) :-
+  assert(Termo), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que realiza o teste do conhecimento
+teste([]).
+teste([R|LR]) :-
+  R,
+  teste(LR).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado comprimento: L,N -> {V,F}
+
+comprimento([], 0).
+comprimento([H|T], N) :-
+  comprimento(T,S),
+  N is S+1.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removeReps: L,R -> {V,F}
