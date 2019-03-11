@@ -70,6 +70,20 @@ servico(7,oftamologia,hsog,guimaraes).
                          comprimento( S,L ),
 				         L == 1).
 
+% Invariante Estrutural:  nao permitir a insercao de serviços que tenham a mesma
+%                         descrição, na mesma instituição da mesma cidade.
+
++servico( _,D,I,C ) :: (solucoes((D,I,C), servico(_,D,I,C), S),
+                        comprimento(S,L),
+                        L == 1).
+
+% Invariante Referencial:  nao permitir a remoção dum serviço se existirem consultas
+%                          associadas a este.
+
+-servico( ID,_,_,_ ) :: (solucoes(ID, consulta(_,_,ID,_), S),
+                         comprimento(S,L),
+                         L == 0).
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado consulta: Data,IdUt,IdServ,Custo-> {V,F}
@@ -85,6 +99,25 @@ consulta(25-02-2019, 6, 7, 40).
 consulta(29-02-2019, 7, 2, 65).
 consulta(04-03-2019, 9, 2, 95).
 consulta(07-03-2019, 1, 1, 10).
+
+% Invariante Estrutural:  nao permitir a um utente que tenha mais de 10 consultas
+%                          por dia.
+
++consulta(D,U,_,_) :: (solucoes((D,U), consulta(D,U,_,_), S),
+                       comprimento(S,L),
+                       L =< 10).
+
+% Invariante Referencial:  nao permitir a insercao de consultas relativas a utentes
+%                          inexistentes.
+
++consulta(_,U,_,_) :: (utente(U,_,_,_)).
+
+% Invariante Referencial:  nao permitir a insercao de consultas relativas a servicos
+%                          inexistentes.
+
++consulta(_,_,ID,_) :: (servico(ID,_,_,_)).
+
+
 
 
 %--------------------------PONTO 1--------------------------%
@@ -189,6 +222,7 @@ servicosPInst(Instituicao,R) :-
 
 servicosPCidade(Cidade,R) :-
     solucoes( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
+
 
 
 
