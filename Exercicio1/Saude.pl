@@ -93,12 +93,13 @@ consulta(13-02-2019, 3, 4, 30).
 consulta(13-02-2019, 5, 5, 35).
 consulta(14-02-2019, 2, 7, 9).
 consulta(20-02-2019, 7, 2, 20).
-consulta(23-02-2019, 7, 8, 5).
+consulta(23-02-2019, 8, 7, 5).
 consulta(23-02-2019, 5, 5, 24).
 consulta(25-02-2019, 6, 7, 40).
 consulta(29-02-2019, 7, 2, 65).
 consulta(04-03-2019, 9, 2, 95).
 consulta(07-03-2019, 1, 1, 10).
+consulta(07-03-2019, 1, 2, 10).
 
 % Invariante Estrutural:  nao permitir a um utente que tenha mais de 10 consultas
 %                          por dia.
@@ -222,6 +223,23 @@ servicosPInst(Instituicao,R) :-
 
 servicosPCidade(Cidade,R) :-
     solucoes( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado servicosPData: Cidade, Resultado -> {V,F}
+
+servicosPData(Data,R) :-
+    solucoes( (Data,D,I,C), (consulta(Data,_,IDS,_),
+                             servico( IDS,D,I,C )), S),
+    removeReps(S,R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado servicosPCusto: Cidade, Resultado -> {V,F}
+
+servicosPCusto(Custo,R) :-
+    solucoes( (Custo,D,I,Cidade), (consulta(_,_,IDS,Custo),
+                                  servico( IDS,D,I,Cidade )), S),
+    removeReps(S,R).
+
 
 
 
