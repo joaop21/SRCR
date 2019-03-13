@@ -1,4 +1,4 @@
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+﻿%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SIST. REPR. CONHECIMENTO E RACIOCINIO - MiEI
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -253,7 +253,7 @@ utentesPServ(Descricao,R) :-
 
     removeReps(S,R).
 
-% ----------------------------------------------------------------------------------------------------
+% ------------------------------------------------------------------------%
 % Extensao do predicado utentesPInst: Instituicao , Resultado -> {V,F}
 
 utentesPInst(Inst,R) :-
@@ -262,6 +262,35 @@ utentesPInst(Inst,R) :-
                                    utente( IdUt,Nome,_,_ )), S ),
 
     removeReps(S,R).
+
+
+%---------------------------PONTO 7 -------------------------------------%
+%Extensão do predicado servicoRPUtente : IdUt , Resultado -> {V,F}
+
+servicoRPUtente(IDU,R):- 
+	solucoes((IDS,Desc) , ( utente( IDU,_,_,_ ),
+				 consulta( _,IDU,IDS,_ ),
+				 servico( IDS,Desc,_,_ )), S ),
+	removeReps(S,R).
+
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado servicoRPInst : Inst , Resultado -> {V,F}
+
+servicoRPInst(Inst,R):-
+	solucoes((IDS,Desc) , ( consulta( _,_,IDS,_ ),
+				 servico( IDS,Desc,Inst,_ )), S ),
+	
+	removeReps(S,R).
+	
+%-------------------------------------------------------------------------%
+%Extensão do predicado servicoRPCidade : Cidade , Resultado -> {V,F}
+
+servicosRPCidade(Cidade,R):-
+	solucoes((IDS,Desc) , ( consulta( _,_,IDS,_ ),
+				 servico( IDS,Desc,_,Cidade )), S ),
+	
+	removeReps(S,R).
 
 %--------------------------PREDICADOS AUXILIARES--------------------------%
 
