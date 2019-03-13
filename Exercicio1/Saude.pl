@@ -248,7 +248,7 @@ servicosPCusto(Custo,R) :-
 
 utentesPServ(Descricao,R) :-
     solucoes( (IDS,Descricao,IdUt,Nome), ( servico( IDS,Descricao,_,_ ),
-                                           consulta( _,IdUt,IDS,_ ), 
+                                           consulta( _,IdUt,IDS,_ ),
                                            utente( IdUt,Nome,_,_ )), S ),
 
     removeReps(S,R).
@@ -267,7 +267,7 @@ utentesPInst(Inst,R) :-
 %---------------------------PONTO 7 -------------------------------------%
 %Extensão do predicado servicoRPUtente : IdUt , Resultado -> {V,F}
 
-servicoRPUtente(IDU,R):- 
+servicoRPUtente(IDU,R):-
 	solucoes((IDS,Desc) , ( utente( IDU,_,_,_ ),
 				 consulta( _,IDU,IDS,_ ),
 				 servico( IDS,Desc,_,_ )), S ),
@@ -280,16 +280,14 @@ servicoRPUtente(IDU,R):-
 servicoRPInst(Inst,R):-
 	solucoes((IDS,Desc) , ( consulta( _,_,IDS,_ ),
 				 servico( IDS,Desc,Inst,_ )), S ),
-	
 	removeReps(S,R).
-	
+
 %-------------------------------------------------------------------------%
 %Extensão do predicado servicoRPCidade : Cidade , Resultado -> {V,F}
 
 servicosRPCidade(Cidade,R):-
-	solucoes((IDS,Desc) , ( consulta( _,_,IDS,_ ),
+	solucoes((IDS,Desc,Cidade) , ( consulta( _,_,IDS,_ ),
 				 servico( IDS,Desc,_,Cidade )), S ),
-	
 	removeReps(S,R).
 
 %--------------------------PREDICADOS AUXILIARES--------------------------%
