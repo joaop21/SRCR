@@ -39,8 +39,7 @@ utente(10,diogo,14,braga).
 %                         repetido
 
 +utente( IU,_,_,_ ) :: (solucoes( IU,(utente( IU,_,_,_ )),S ),
-                        comprimento( S,L ),
-				        L == 1).
+                        comprimento( S,1 )).
 
 % Invariante Estrutural: a idade de cada utente tem de ser inteira e
 %             estar no intervalo [0,120]
@@ -48,6 +47,12 @@ utente(10,diogo,14,braga).
 +utente( _,_,I,_ ) :: (integer(I),
                        I >= 0,
                        I =< 120).
+
+% Invariante Rferencial: um utente so pode ser removido se nao existir consultas
+%                       associadas a este.
+
+-utente( ID,_,_,_ ) :: (solucoes((ID,IDS), consulta(_,ID,IDS,_), S),
+                        comprimento(S,0)).
 
 
 
@@ -67,22 +72,19 @@ servico(7,oftamologia,hsog,guimaraes).
 %                         repetido
 
 +servico( IS,_,_,_ ) :: (solucoes( IS,(servico( IS,_,_,_ )),S ),
-                         comprimento( S,L ),
-				         L == 1).
+                         comprimento( S,1 )).
 
 % Invariante Estrutural:  nao permitir a insercao de serviços que tenham a mesma
 %                         descrição, na mesma instituição da mesma cidade.
 
 +servico( _,D,I,C ) :: (solucoes((D,I,C), servico(_,D,I,C), S),
-                        comprimento(S,L),
-                        L == 1).
+                        comprimento(S,1)).
 
 % Invariante Referencial:  nao permitir a remoção dum serviço se existirem consultas
 %                          associadas a este.
 
 -servico( ID,_,_,_ ) :: (solucoes(ID, consulta(_,_,ID,_), S),
-                         comprimento(S,L),
-                         L == 0).
+                         comprimento(S,0)).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -105,8 +107,7 @@ consulta(07-03-2019, 1, 2, 10).
 %                          por dia.
 
 +consulta(D,U,_,_) :: (solucoes((D,U), consulta(D,U,_,_), S),
-                       comprimento(S,L),
-                       L =< 10).
+                       comprimento(S,10)).
 
 % Invariante Referencial:  nao permitir a insercao de consultas relativas a utentes
 %                          inexistentes.
