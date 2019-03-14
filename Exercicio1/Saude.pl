@@ -109,7 +109,7 @@ consulta(data(07,03,2019), 1, 2, 10).
 
 +consulta(D,U,_,_) :: (solucoes(U, (consulta(Di,U,_,_),comparaDatas(D,Di,=)), S),
                        comprimento(S,LR),
-                       LR <= 10).
+                       LR =< 10).
 
 % Invariante Estrutural:  nao permitir a insercao duma data que nao seja válida.
 
