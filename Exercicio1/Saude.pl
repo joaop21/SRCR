@@ -331,8 +331,29 @@ servicosRPCidade(Cidade,R):-
 %---------------------------PONTO 8 -------------------------------------%
 
 %-------------------------------------------------------------------------%
-%Extensão do predicado custoTPUtente : utente , Resultado -> {V,F}
+%Extensão do predicado custoTPUtente : Utente , Resultado -> {V,F}
+custoTPUtente(IdUt,R) :-
+  solucoes((Custo) , consulta( _,IdUt,_,Custo ), S),
+  somaConjVal(S,R).
 
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPServico : Servico , Resultado -> {V,F}
+custoTPServ(IdServ,R) :-
+  solucoes((Custo) , consulta( _,_,IdServ,Custo ), S),
+  somaConjVal(S,R).
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPInst : Instituicao , Resultado -> {V,F}
+custoTPInst(Inst,R) :-
+  solucoes((Custo) , ( servico( IdServ,_,Inst,_ ),
+                       consulta( _,_,IdServ,Custo )), S),
+  somaConjVal(S,R).
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPData : Data , Resultado -> {V,F}
+custoTPData(Data,R) :-
+  solucoes((Custo) , consulta( Data,_,_,Custo ), S),
+  somaConjVal(S,R).
 
 
 
@@ -431,3 +452,11 @@ comparaDatas(data(_, M1, A), data(_, M2, A), R) :-
     compare(R, M1, M2).
 comparaDatas(data(D1, M, A), data(D2, M, A), R) :-
     compare(R, D1, D2).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado somaConjVal: L,R -> {V,F}
+
+somaConjVal( [],0 ).
+somaConjVal( [X|L],R ) :-
+    somaConjVal( L,Y ),
+    R is X+Y.
