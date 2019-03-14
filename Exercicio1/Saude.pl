@@ -18,6 +18,7 @@
 :- dynamic utente/4.
 :- dynamic servico/4.
 :- dynamic consulta/4.
+:- dynamic data/3.
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -90,24 +91,29 @@ servico(7,oftamologia,hsog,guimaraes).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado consulta: Data,IdUt,IdServ,Custo-> {V,F}
 
-consulta(01-02-2019, 1, 6, 25).
-consulta(13-02-2019, 3, 4, 30).
-consulta(13-02-2019, 5, 5, 35).
-consulta(14-02-2019, 2, 7, 9).
-consulta(20-02-2019, 7, 2, 20).
-consulta(23-02-2019, 8, 7, 5).
-consulta(23-02-2019, 5, 5, 24).
-consulta(25-02-2019, 6, 7, 40).
-consulta(29-02-2019, 7, 2, 65).
-consulta(04-03-2019, 9, 2, 95).
-consulta(07-03-2019, 1, 1, 10).
-consulta(07-03-2019, 1, 2, 10).
+consulta(data(01,02,2019), 1, 6, 25).
+consulta(data(13,02,2019), 3, 4, 30).
+consulta(data(13,02,2019), 5, 5, 35).
+consulta(data(14,02,2019), 2, 7, 9).
+consulta(data(20,02,2019), 7, 2, 20).
+consulta(data(23,02,2019), 8, 7, 5).
+consulta(data(23,02,2019), 5, 5, 24).
+consulta(data(25,02,2019), 6, 7, 40).
+consulta(data(29,02,2019), 7, 2, 65).
+consulta(data(04,03,2019), 9, 2, 95).
+consulta(data(07,03,2019), 1, 1, 10).
+consulta(data(07,03,2019), 1, 2, 10).
 
 % Invariante Estrutural:  nao permitir a um utente que tenha mais de 10 consultas
 %                          por dia.
 
-+consulta(D,U,_,_) :: (solucoes((D,U), consulta(D,U,_,_), S),
-                       comprimento(S,10)).
+%+consulta(D,U,_,_) :: (solucoes((Di,U), consulta(Di,U,_,_), S),
+                      % comparaDatas(D,Di,=),
+                      % comprimento(S,10)).
+
+% Invariante Estrutural:  nao permitir a insercao duma data que nao seja válida.
+
++consulta(D,_,_,_) :: (isData(D)).
 
 % Invariante Referencial:  nao permitir a insercao de consultas relativas a utentes
 %                          inexistentes.
@@ -119,6 +125,33 @@ consulta(07-03-2019, 1, 2, 10).
 
 +consulta(_,_,ID,_) :: (servico(ID,_,_,_)).
 
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado data: D, M, A -> {V,F}
+
+data(D, M, A) :-
+	member(M, [1,3,5,7,8,10,12]),
+	D >= 1,
+	D =< 31.
+data(D, M, A) :-
+	member(M, [4,6,9,11]),
+	D >= 1,
+	D =< 30.
+data(D, 2, A) :- % ano nao bissexto
+	A mod 4 =\= 0,
+	D >= 1,
+	D =< 28.
+data(D, 2, A) :-
+	A mod 4 =:= 0,
+	D >= 1,
+    D =< 29.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado isData: X -> {V,F}
+
+isData(data(D, M, A)) :-
+    data(D, M, A).
 
 
 
@@ -381,3 +414,20 @@ removeReps([H|T],[H|R]) :-
 nao(T) :-
     T, !, fail.
 nao(T).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado comparaDatas: Data1, Data2, R -> {V,F}
+%
+% O predicado comparaDatas compara duas datas. O resultado da comparacao e:
+%   <  se a primeira data for anterior à segunda;
+%   =  se as datas foram iguais;
+%   >  se a primeira data for posterior à segunda.
+
+comparaDatas(data(_, _, A1), data(_, _, A2), R) :-
+	A1 \= A2,
+    compare(R, A1, A2).
+comparaDatas(data(_, M1, A), data(_, M2, A), R) :-
+	M1 \= M2,
+    compare(R, M1, M2).
+comparaDatas(data(D1, M, A), data(D2, M, A), R) :-
+    compare(R, D1, D2).
