@@ -107,9 +107,9 @@ consulta(data(07,03,2019), 1, 2, 10).
 % Invariante Estrutural:  nao permitir a um utente que tenha mais de 10 consultas
 %                          por dia.
 
-%+consulta(D,U,_,_) :: (solucoes((Di,U), consulta(Di,U,_,_), S),
-                      % comparaDatas(D,Di,=),
-                      % comprimento(S,10)).
++consulta(D,U,_,_) :: (solucoes(U, (consulta(Di,U,_,_),comparaDatas(D,Di,=)), S),
+                       comprimento(S,LR),
+                       LR <= 10).
 
 % Invariante Estrutural:  nao permitir a insercao duma data que nao seja válida.
 
