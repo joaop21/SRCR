@@ -18,7 +18,6 @@
 :- dynamic utente/4.
 :- dynamic servico/4.
 :- dynamic consulta/4.
-:- dynamic data/3.
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -481,3 +480,16 @@ somaConjVal( [],0 ).
 somaConjVal( [X|L],R ) :-
     somaConjVal( L,Y ),
     R is X+Y.
+
+
+
+
+%--------------------------PREDICADOS EXTRA--------------------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite guardar a base de conhecimento num ficheiro
+
+guardaBC(Nome) :-
+    tell(Nome),
+    listing,
+    told.
