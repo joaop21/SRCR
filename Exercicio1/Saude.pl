@@ -18,6 +18,7 @@
 :- dynamic utente/4.
 :- dynamic servico/4.
 :- dynamic consulta/4.
+:- dynamic data/3.
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -39,8 +40,7 @@ utente(10,diogo,14,braga).
 %                         repetido
 
 +utente( IU,_,_,_ ) :: (solucoes( IU,(utente( IU,_,_,_ )),S ),
-                        comprimento( S,L ),
-				        L == 1).
+                        comprimento( S,1 )).
 
 % Invariante Estrutural: a idade de cada utente tem de ser inteira e
 %             estar no intervalo [0,120]
@@ -48,6 +48,12 @@ utente(10,diogo,14,braga).
 +utente( _,_,I,_ ) :: (integer(I),
                        I >= 0,
                        I =< 120).
+
+% Invariante Rferencial: um utente so pode ser removido se nao existir consultas
+%                       associadas a este.
+
+-utente( ID,_,_,_ ) :: (solucoes((ID,IDS), consulta(_,ID,IDS,_), S),
+                        comprimento(S,0)).
 
 
 
@@ -67,46 +73,47 @@ servico(7,oftamologia,hsog,guimaraes).
 %                         repetido
 
 +servico( IS,_,_,_ ) :: (solucoes( IS,(servico( IS,_,_,_ )),S ),
-                         comprimento( S,L ),
-				         L == 1).
+                         comprimento( S,1 )).
 
 % Invariante Estrutural:  nao permitir a insercao de serviços que tenham a mesma
 %                         descrição, na mesma instituição da mesma cidade.
 
 +servico( _,D,I,C ) :: (solucoes((D,I,C), servico(_,D,I,C), S),
-                        comprimento(S,L),
-                        L == 1).
+                        comprimento(S,1)).
 
 % Invariante Referencial:  nao permitir a remoção dum serviço se existirem consultas
 %                          associadas a este.
 
 -servico( ID,_,_,_ ) :: (solucoes(ID, consulta(_,_,ID,_), S),
-                         comprimento(S,L),
-                         L == 0).
+                         comprimento(S,0)).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado consulta: Data,IdUt,IdServ,Custo-> {V,F}
 
-consulta(01-02-2019, 1, 6, 25).
-consulta(13-02-2019, 3, 4, 30).
-consulta(13-02-2019, 5, 5, 35).
-consulta(14-02-2019, 2, 7, 9).
-consulta(20-02-2019, 7, 2, 20).
-consulta(23-02-2019, 8, 7, 5).
-consulta(23-02-2019, 5, 5, 24).
-consulta(25-02-2019, 6, 7, 40).
-consulta(29-02-2019, 7, 2, 65).
-consulta(04-03-2019, 9, 2, 95).
-consulta(07-03-2019, 1, 1, 10).
-consulta(07-03-2019, 1, 2, 10).
+consulta(data(01,02,2019), 1, 6, 25).
+consulta(data(13,02,2019), 3, 4, 30).
+consulta(data(13,02,2019), 5, 5, 35).
+consulta(data(14,02,2019), 2, 7, 9).
+consulta(data(20,02,2019), 7, 2, 20).
+consulta(data(23,02,2019), 8, 7, 5).
+consulta(data(23,02,2019), 5, 5, 24).
+consulta(data(25,02,2019), 6, 7, 40).
+consulta(data(29,02,2019), 7, 2, 65).
+consulta(data(04,03,2019), 9, 2, 95).
+consulta(data(07,03,2019), 1, 1, 10).
+consulta(data(07,03,2019), 1, 2, 10).
 
 % Invariante Estrutural:  nao permitir a um utente que tenha mais de 10 consultas
 %                          por dia.
 
-+consulta(D,U,_,_) :: (solucoes((D,U), consulta(D,U,_,_), S),
-                       comprimento(S,L),
-                       L =< 10).
+%+consulta(D,U,_,_) :: (solucoes((Di,U), consulta(Di,U,_,_), S),
+                      % comparaDatas(D,Di,=),
+                      % comprimento(S,10)).
+
+% Invariante Estrutural:  nao permitir a insercao duma data que nao seja válida.
+
++consulta(D,_,_,_) :: (isData(D)).
 
 % Invariante Referencial:  nao permitir a insercao de consultas relativas a utentes
 %                          inexistentes.
@@ -118,6 +125,33 @@ consulta(07-03-2019, 1, 2, 10).
 
 +consulta(_,_,ID,_) :: (servico(ID,_,_,_)).
 
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado data: D, M, A -> {V,F}
+
+data(D, M, A) :-
+	member(M, [1,3,5,7,8,10,12]),
+	D >= 1,
+	D =< 31.
+data(D, M, A) :-
+	member(M, [4,6,9,11]),
+	D >= 1,
+	D =< 30.
+data(D, 2, A) :- % ano nao bissexto
+	A mod 4 =\= 0,
+	D >= 1,
+	D =< 28.
+data(D, 2, A) :-
+	A mod 4 =:= 0,
+	D >= 1,
+    D =< 29.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado isData: X -> {V,F}
+
+isData(data(D, M, A)) :-
+    data(D, M, A).
 
 
 
@@ -182,31 +216,31 @@ instituicoes(R) :-
 % Extensao do predicado utentesPNome: Nome, Resultado -> {V,F}
 
 utentesPNome(Nome,R) :-
-    solucoes( (IU,Nome,I,C), utente(IU,Nome,I,C), R).
+    solucoes((IU,Nome,I,C), utente(IU,Nome,I,C), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado utentesPIdade: Idade, Resultado -> {V,F}
 
 utentesPIdade(Idade,R) :-
-    solucoes( (IU,N,Idade,C), utente(IU,N,Idade,C), R).
+    solucoes((IU,N,Idade,C), utente(IU,N,Idade,C), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado utentesPCidade: Cidade, Resultado -> {V,F}
 
 utentesPCidade(Cidade,R) :-
-    solucoes( (IU,N,I,Cidade), utente(IU,N,I,Cidade), R).
+    solucoes((IU,N,I,Cidade), utente(IU,N,I,Cidade), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPDesc: Descrição, Resultado -> {V,F}
 
 servicosPDesc(Descricao,R) :-
-    solucoes( (IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
+    solucoes((IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado consultasPData: Data, Resultado -> {V,F}
 
 consultasPData(Data,R) :-
-    solucoes( (Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
+    solucoes((Data,IU,IS,C), consulta( Data,IU,IS,C ), R).
 
 
 
@@ -216,29 +250,32 @@ consultasPData(Data,R) :-
 % Extensao do predicado servicosPInst: Instituição, Resultado -> {V,F}
 
 servicosPInst(Instituicao,R) :-
-    solucoes( (IS,D,Instituicao,C), servico( IS,D,Instituicao,C ), R).
+    solucoes((D,C), servico( IS,D,Instituicao,C ), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPCidade: Cidade, Resultado -> {V,F}
 
 servicosPCidade(Cidade,R) :-
-    solucoes( (IS,D,I,Cidade), servico( IS,D,I,Cidade ), R).
+    solucoes((D,I), servico( IS,D,I,Cidade ), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPData: Data, Resultado -> {V,F}
 
 servicosPData(Data,R) :-
-    solucoes( (Data,D,I,C), (consulta(Data,_,IDS,_),
-                             servico( IDS,D,I,C )), S),
+    solucoes((D,I,C),
+            (consulta(Data,_,IDS,_), servico( IDS,D,I,C )),
+            S),
     removeReps(S,R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPCusto: Custo, Resultado -> {V,F}
 
 servicosPCusto(Custo,R) :-
-    solucoes( (Custo,D,I,Cidade), (consulta(_,_,IDS,Custo),
-                                  servico( IDS,D,I,Cidade )), S),
+    solucoes((D,I,Cidade),
+            (consulta(_,_,IDS,Custo), servico( IDS,D,I,Cidade )),
+            S),
     removeReps(S,R).
+
 
 
 %--------------------------PONTO 6--------------------------%
@@ -247,50 +284,81 @@ servicosPCusto(Custo,R) :-
 % Extensao do predicado utentesPServ: Servico , Resultado -> {V,F}
 
 utentesPServ(Descricao,R) :-
-    solucoes( (IDS,Descricao,IdUt,Nome), ( servico( IDS,Descricao,_,_ ),
-                                           consulta( _,IdUt,IDS,_ ), 
-                                           utente( IdUt,Nome,_,_ )), S ),
-
+    solucoes((IdUt,Nome),
+            (servico( IDS,Descricao,_,_ ), consulta( _,IdUt,IDS,_ ), utente( IdUt,Nome,_,_ )),
+            S),
     removeReps(S,R).
 
 % ------------------------------------------------------------------------%
 % Extensao do predicado utentesPInst: Instituicao , Resultado -> {V,F}
 
 utentesPInst(Inst,R) :-
-    solucoes( (Inst,IdUt,Nome), ( servico( IDS,_,Inst,_ ),
-                                   consulta( _,IdUt,IDS,_ ),
-                                   utente( IdUt,Nome,_,_ )), S ),
-
+    solucoes((IdUt,Nome),
+            (servico( IDS,_,Inst,_ ), consulta( _,IdUt,IDS,_ ), utente( IdUt,Nome,_,_ )),
+            S),
     removeReps(S,R).
+
 
 
 %---------------------------PONTO 7 -------------------------------------%
 %Extensão do predicado servicoRPUtente : IdUt , Resultado -> {V,F}
 
-servicoRPUtente(IDU,R):- 
-	solucoes((IDS,Desc) , ( utente( IDU,_,_,_ ),
-				 consulta( _,IDU,IDS,_ ),
-				 servico( IDS,Desc,_,_ )), S ),
-	removeReps(S,R).
+servicoRPUtente(IDU,R):-
+	   solucoes((Desc,I,C),
+              (utente( IDU,_,_,_ ), consulta( _,IDU,IDS,_ ), servico( IDS,Desc,I,C )),
+              S),
+	   removeReps(S,R).
 
 
 %-------------------------------------------------------------------------%
 %Extensão do predicado servicoRPInst : Inst , Resultado -> {V,F}
 
 servicoRPInst(Inst,R):-
-	solucoes((IDS,Desc) , ( consulta( _,_,IDS,_ ),
-				 servico( IDS,Desc,Inst,_ )), S ),
-	
-	removeReps(S,R).
-	
+	   solucoes((Desc,C),
+             (consulta( _,_,IDS,_ ), servico( IDS,Desc,Inst,C )),
+             S),
+	   removeReps(S,R).
+
 %-------------------------------------------------------------------------%
 %Extensão do predicado servicoRPCidade : Cidade , Resultado -> {V,F}
 
 servicosRPCidade(Cidade,R):-
-	solucoes((IDS,Desc) , ( consulta( _,_,IDS,_ ),
-				 servico( IDS,Desc,_,Cidade )), S ),
-	
-	removeReps(S,R).
+	   solucoes((Desc,Inst),
+             (consulta( _,_,IDS,_ ), servico( IDS,Desc,Inst,Cidade )),
+             S),
+  	 removeReps(S,R).
+
+
+
+%---------------------------PONTO 8 -------------------------------------%
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPUtente : Utente , Resultado -> {V,F}
+custoTPUtente(IdUt,R) :-
+     solucoes((Custo), consulta( _,IdUt,_,Custo ), S),
+     somaConjVal(S,R).
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPServico : Servico , Resultado -> {V,F}
+custoTPServ(IdServ,R) :-
+     solucoes((Custo), consulta( _,_,IdServ,Custo ), S),
+     somaConjVal(S,R).
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPInst : Instituicao , Resultado -> {V,F}
+custoTPInst(Inst,R) :-
+     solucoes((Custo),
+             (servico( IdServ,_,Inst,_ ), consulta( _,_,IdServ,Custo )),
+             S),
+     somaConjVal(S,R).
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPData : Data , Resultado -> {V,F}
+custoTPData(Data,R) :-
+     solucoes((Custo), consulta( Data,_,_,Custo ), S),
+     somaConjVal(S,R).
+
+
 
 %--------------------------PREDICADOS AUXILIARES--------------------------%
 
@@ -306,9 +374,9 @@ evolucao( Termo ) :-
 % Extensao do predicado que permite a regressão do conhecimento
 
 regressao(Termo) :-
-	Termo,
-	solucoes( Invariante,-Termo::Invariante,Lista ),
-	remover( Termo ),
+	  Termo,
+	  solucoes( Invariante,-Termo::Invariante,Lista ),
+	  remover( Termo ),
     teste( Lista ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -359,7 +427,7 @@ comprimento([H|T], N) :-
 removeReps([], []).
 removeReps([H|T], R) :-
     member(H,T),
-	removeReps(T, R).
+	  removeReps(T, R).
 removeReps([H|T],[H|R]) :-
     nao(member(H,T)),
     removeReps(T,R).
@@ -370,3 +438,28 @@ removeReps([H|T],[H|R]) :-
 nao(T) :-
     T, !, fail.
 nao(T).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado comparaDatas: Data1, Data2, R -> {V,F}
+%
+% O predicado comparaDatas compara duas datas. O resultado da comparacao e:
+%   <  se a primeira data for anterior à segunda;
+%   =  se as datas foram iguais;
+%   >  se a primeira data for posterior à segunda.
+
+comparaDatas(data(_, _, A1), data(_, _, A2), R) :-
+	A1 \= A2,
+    compare(R, A1, A2).
+comparaDatas(data(_, M1, A), data(_, M2, A), R) :-
+	M1 \= M2,
+    compare(R, M1, M2).
+comparaDatas(data(D1, M, A), data(D2, M, A), R) :-
+    compare(R, D1, D2).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado somaConjVal: L,R -> {V,F}
+
+somaConjVal( [],0 ).
+somaConjVal( [X|L],R ) :-
+    somaConjVal( L,Y ),
+    R is X+Y.
