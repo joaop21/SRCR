@@ -576,8 +576,8 @@ removerM(IM,N,I,IS) :-
 % Extensao do predicado medicosPInst: Inst, Resultado -> {V,F}
 
 medicosPInst(Inst,R) :-
-   solucoes((IM,N,I,IS),
-           (medico(IM,N,I,IS), servico(IS,_,Inst,_)),
+   solucoes((IM,N,I,Desc),
+           (medico(IM,N,I,IS), servico(IS,Desc,Inst,_)),
            R).
 
 % ----------------------------------------------------------------------------------------------------
@@ -589,7 +589,7 @@ consultasRPMed(IM,R) :-
            R).
 
 %-------------------------------------------------------------------------%
-%Extensão do predicado custoTPMed: IdMed , Resultado -> {V,F}
+%Extensão do predicado custoTPMed: IdMed, Resultado -> {V,F}
 
 custoTPMed(IM,R) :-
      solucoes((Custo),
