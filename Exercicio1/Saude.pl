@@ -528,6 +528,8 @@ medico(6,joana,53,4).
 medico(7,roberto,48,5).
 
 
+
+
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                         repetido
 
@@ -553,14 +555,39 @@ medico(7,roberto,48,5).
                          comprimento(S,0)).
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Medico : IdMed, Nome, Idade, IdServ -> {V,F}
 
-registarM( IM,N,I,ID ) :-
-   evolucao(medico( IM,N,I,ID )).
+registarM(IM,N,I,IS) :-
+   evolucao(medico( medico( IM,N,I,IS ) )).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Medico : IdMed, Nome, Idade, IdServ -> {V,F}
 
-removerM( IM,N,I,ID ) :-
-   regressao(medico( IM,N,I,ID )).
+removerM(IM,N,I,IS) :-
+   regressao(medico( IM,N,I,IS )).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado medicosPInst: Inst, Resultado -> {V,F}
+
+medicosPInst(Inst,R) :-
+   solucoes((IM,N,I,IS),
+            (medico( IM,N,I,IS ), servico( IS,_,Inst,_ )),
+            R).
+
+% ----------------------------------------------------------------------------------------------------
+% Extensao do predicado consultasPMed: IdMed, Resultado -> {V,F}
+
+consultasRPMed(IM,R) :-
+   solucoes((N,Desc,Inst,Data),
+            (medico( IM,N,_,IS ), consulta( Data,_,_,_,IM ), servico( IS,Desc,Inst,_ )),
+            R).
+
+%-------------------------------------------------------------------------%
+%Extensão do predicado custoTPMed: IdMed , Resultado -> {V,F}
+custoTPMed(IM,R) :-
+     solucoes((Custo),
+             (medico( IM,_,_,_ ), consulta( _,_,_,Custo,IM )),
+             S),
+     somaConjVal(S,R).
