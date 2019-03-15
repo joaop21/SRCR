@@ -489,7 +489,20 @@ somaConjVal( [X|L],R ) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite guardar a base de conhecimento num ficheiro
 
-guardaBC(Nome) :-
-    tell(Nome),
+guardaBC(Ficheiro) :-
+    tell(Ficheiro),
     listing,
     told.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite carregar a base de conhecimento dum ficheiro
+
+carregaBC(Ficheiro) :-
+    seeing(FicheiroAntigo),
+    see(Ficheiro),
+    repeat,
+    read(Termo),
+    (Termo == end_of_file -> true ;
+    assert(Termo),fail),
+    seen,
+    see(FicheiroAntigo).
