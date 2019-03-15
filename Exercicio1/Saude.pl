@@ -7,14 +7,14 @@
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: Declaracoes iniciais
 
-:- set_prolog_flag( discontiguous_warnings,off ).
-:- set_prolog_flag( single_var_warnings,off ).
-:- set_prolog_flag( unknown,fail ).
+:- set_prolog_flag(discontiguous_warnings,off).
+:- set_prolog_flag(single_var_warnings,off).
+:- set_prolog_flag(unknown,fail).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: Definicoes iniciais
 
-:- op( 900,xfy,'::' ).
+:- op(900,xfy,'::').
 :- dynamic utente/4.
 :- dynamic servico/4.
 :- dynamic consulta/5.
@@ -39,21 +39,21 @@ utente(10,diogo,14,braga).
 % Invariante Estrutural:  nao permitir a insercao de conhecimento
 %                         repetido
 
-+utente( IU,_,_,_ ) :: (solucoes( IU,(utente( IU,_,_,_ )),S ),
-                        comprimento( S,1 )).
++utente(IU,_,_,_) :: (solucoes(IU, (utente(IU,_,_,_)), S),
+                     comprimento(S,1)).
 
 % Invariante Estrutural: a idade de cada utente tem de ser inteira e
 %             estar no intervalo [0,120]
 
-+utente( _,_,I,_ ) :: (integer(I),
-                       I >= 0,
-                       I =< 120).
++utente(_,_,I,_) :: (integer(I),
+                    I >= 0,
+                    I =< 120).
 
 % Invariante Rferencial: um utente so pode ser removido se nao existir consultas
 %                       associadas a este.
 
--utente( ID,_,_,_ ) :: (solucoes((ID,IDS), consulta(_,ID,IDS,_,_), S),
-                        comprimento(S,0)).
+-utente(ID,_,_,_) :: (solucoes((ID,IDS), consulta(_,ID,IDS,_,_), S),
+                     comprimento(S,0)).
 
 
 
@@ -72,20 +72,20 @@ servico(7,oftamologia,hsog,guimaraes).
 % Invariante Estrutural:  nao permitir a insercao de conhecimento
 %                         repetido
 
-+servico( IS,_,_,_ ) :: (solucoes( IS,(servico( IS,_,_,_ )),S ),
-                         comprimento( S,1 )).
++servico(IS,_,_,_) :: (solucoes(IS, (servico( IS,_,_,_ )), S),
+                      comprimento(S,1)).
 
 % Invariante Estrutural:  nao permitir a insercao de serviços que tenham a mesma
 %                         descrição, na mesma instituição da mesma cidade.
 
-+servico( _,D,I,C ) :: (solucoes((D,I,C), servico(_,D,I,C), S),
-                        comprimento(S,1)).
++servico(_,D,I,C) :: (solucoes((D,I,C), servico(_,D,I,C),S),
+                     comprimento(S,1)).
 
 % Invariante Referencial:  nao permitir a remoção dum serviço se existirem consultas
 %                          associadas a este.
 
--servico( ID,_,_,_ ) :: (solucoes(ID, consulta(_,_,ID,_,_), S),
-                         comprimento(S,0)).
+-servico(ID,_,_,_) :: (solucoes(ID, consulta(_,_,ID,_,_), S),
+                      comprimento(S,0)).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -110,8 +110,8 @@ consulta(data(07,03,2019), 10, 2, 10, 8).
 %                          por dia.
 
 +consulta(D,U,_,_,_) :: (solucoes(U, (consulta(Di,U,_,_,_),comparaDatas(D,Di,=)), S),
-                       comprimento(S,LR),
-                       LR =< 10).
+                        comprimento(S,LR),
+                        LR =< 10).
 
 % Invariante Estrutural:  nao permitir a insercao duma data que nao seja válida.
 
@@ -138,21 +138,21 @@ consulta(data(07,03,2019), 10, 2, 10, 8).
 % Extensao do predicado data: D, M, A -> {V,F}
 
 data(D, M, A) :-
-	member(M, [1,3,5,7,8,10,12]),
-	D >= 1,
-	D =< 31.
+	   member(M, [1,3,5,7,8,10,12]),
+	   D >= 1,
+	   D =< 31.
 data(D, M, A) :-
-	member(M, [4,6,9,11]),
-	D >= 1,
-	D =< 30.
+	   member(M, [4,6,9,11]),
+	   D >= 1,
+	   D =< 30.
 data(D, 2, A) :- % ano nao bissexto
-	A mod 4 =\= 0,
-	D >= 1,
-	D =< 28.
+	   A mod 4 =\= 0,
+	   D >= 1,
+	   D =< 28.
 data(D, 2, A) :-
-	A mod 4 =:= 0,
-	D >= 1,
-    D =< 29.
+	   A mod 4 =:= 0,
+	   D >= 1,
+     D =< 29.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado isData: X -> {V,F}
@@ -169,20 +169,20 @@ isData(data(D, M, A)) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
-registarU( IU,N,I,C ) :-
-    evolucao(utente( IU,N,I,C )).
+registarU(IU,N,I,C) :-
+    evolucao(utente(IU,N,I,C)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
 
-registarServ( IS,D,I,C ) :-
-    evolucao(servico( IS,D,I,C )).
+registarServ(IS,D,I,C) :-
+    evolucao(servico(IS,D,I,C)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Consulta : Data,IdUt,IdServ,Custo,IdMed -> {V,F}
 
-registarConsulta( DA,IU,IS,C,IM ) :-
-    evolucao(consulta( DA,IU,IS,C,IM )).
+registarConsulta(DA,IU,IS,C,IM) :-
+    evolucao(consulta(DA,IU,IS,C,IM)).
 
 
 
@@ -193,20 +193,20 @@ registarConsulta( DA,IU,IS,C,IM ) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Utente : IdUt,Nome,Idade,Cidade-> {V,F}
 
-removerU( IU,N,I,C ) :-
-    regressao(utente( IU,N,I,C )).
+removerU(IU,N,I,C) :-
+    regressao(utente(IU,N,I,C)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
 
 removerServ(IS,D,I,C) :-
-    regressao(servico( IS,D,I,C )).
+    regressao(servico(IS,D,I,C)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Consulta : Data,IdUt,IdServ,Custo,IdMed -> {V,F}
 
-removerConsulta( DA,IU,IS,C,IM ) :-
-    regressao(consulta( DA,IU,IS,C,IM )).
+removerConsulta(DA,IU,IS,C,IM) :-
+    regressao(consulta(DA,IU,IS,C,IM)).
 
 
 
@@ -249,13 +249,13 @@ utentesPCidade(Cidade,R) :-
 % Extensao do predicado servicosPDesc: Descrição, Resultado -> {V,F}
 
 servicosPDesc(Descricao,R) :-
-    solucoes((IS,Descricao,I,C), servico( IS,Descricao,I,C ), R).
+    solucoes((IS,Descricao,I,C), servico(IS,Descricao,I,C), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado consultasPData: Data, Resultado -> {V,F}
 
 consultasPData(Data,R) :-
-    solucoes((Data,IU,IS,C,IM), consulta( Data,IU,IS,C,IM ), R).
+    solucoes((Data,IU,IS,C,IM), consulta(Data,IU,IS,C,IM), R).
 
 
 
@@ -267,20 +267,20 @@ consultasPData(Data,R) :-
 % Extensao do predicado servicosPInst: Instituição, Resultado -> {V,F}
 
 servicosPInst(Instituicao,R) :-
-    solucoes((D,C), servico( IS,D,Instituicao,C ), R).
+    solucoes((D,C), servico(IS,D,Instituicao,C), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPCidade: Cidade, Resultado -> {V,F}
 
 servicosPCidade(Cidade,R) :-
-    solucoes((D,I), servico( IS,D,I,Cidade ), R).
+    solucoes((D,I), servico(IS,D,I,Cidade), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPData: Data, Resultado -> {V,F}
 
 servicosPData(Data,R) :-
     solucoes((D,I,C),
-            (consulta(Data,_,IDS,_,_), servico( IDS,D,I,C )),
+            (consulta(Data,_,IDS,_,_), servico(IDS,D,I,C)),
             S),
     removeReps(S,R).
 
@@ -289,7 +289,7 @@ servicosPData(Data,R) :-
 
 servicosPCusto(Custo,R) :-
     solucoes((D,I,Cidade),
-            (consulta(_,_,IDS,Custo,_), servico( IDS,D,I,Cidade )),
+            (consulta(_,_,IDS,Custo,_), servico(IDS,D,I,Cidade)),
             S),
     removeReps(S,R).
 
@@ -304,7 +304,7 @@ servicosPCusto(Custo,R) :-
 
 utentesPServ(Descricao,R) :-
     solucoes((IdUt,Nome),
-            (servico( IDS,Descricao,_,_ ), consulta( _,IdUt,IDS,_,_ ), utente( IdUt,Nome,_,_ )),
+            (servico(IDS,Descricao,_,_), consulta(_,IdUt,IDS,_,_), utente(IdUt,Nome,_,_)),
             S),
     removeReps(S,R).
 
@@ -313,7 +313,7 @@ utentesPServ(Descricao,R) :-
 
 utentesPInst(Inst,R) :-
     solucoes((IdUt,Nome),
-            (servico( IDS,_,Inst,_ ), consulta( _,IdUt,IDS,_,_ ), utente( IdUt,Nome,_,_ )),
+            (servico(IDS,_,Inst,_), consulta(_,IdUt,IDS,_,_), utente(IdUt,Nome,_,_)),
             S),
     removeReps(S,R).
 
@@ -326,7 +326,7 @@ utentesPInst(Inst,R) :-
 
 servicoRPUtente(IDU,R):-
 	   solucoes((Desc,I,C),
-              (utente( IDU,_,_,_ ), consulta( _,IDU,IDS,_,_ ), servico( IDS,Desc,I,C )),
+              (utente(IDU,_,_,_), consulta(_,IDU,IDS,_,_), servico(IDS,Desc,I,C)),
               S),
 	   removeReps(S,R).
 
@@ -336,7 +336,7 @@ servicoRPUtente(IDU,R):-
 
 servicoRPInst(Inst,R):-
 	   solucoes((Desc,C),
-             (consulta( _,_,IDS,_,_ ), servico( IDS,Desc,Inst,C )),
+             (consulta(_,_,IDS,_,_), servico(IDS,Desc,Inst,C)),
              S),
 	   removeReps(S,R).
 
@@ -345,7 +345,7 @@ servicoRPInst(Inst,R):-
 
 servicosRPCidade(Cidade,R):-
 	   solucoes((Desc,Inst),
-             (consulta( _,_,IDS,_,_ ), servico( IDS,Desc,Inst,Cidade )),
+             (consulta(_,_,IDS,_,_), servico(IDS,Desc,Inst,Cidade)),
              S),
   	 removeReps(S,R).
 
@@ -358,27 +358,27 @@ servicosRPCidade(Cidade,R):-
 %-------------------------------------------------------------------------%
 %Extensão do predicado custoTPUtente : Utente , Resultado -> {V,F}
 custoTPUtente(IdUt,R) :-
-     solucoes((Custo), consulta( _,IdUt,_,Custo,_ ), S),
+     solucoes((Custo), consulta(_,IdUt,_,Custo,_), S),
      somaConjVal(S,R).
 
 %-------------------------------------------------------------------------%
 %Extensão do predicado custoTPServico : Servico , Resultado -> {V,F}
 custoTPServ(IdServ,R) :-
-     solucoes((Custo), consulta( _,_,IdServ,Custo,_ ), S),
+     solucoes((Custo), consulta(_,_,IdServ,Custo,_), S),
      somaConjVal(S,R).
 
 %-------------------------------------------------------------------------%
 %Extensão do predicado custoTPInst : Instituicao , Resultado -> {V,F}
 custoTPInst(Inst,R) :-
      solucoes((Custo),
-             (servico( IdServ,_,Inst,_ ), consulta( _,_,IdServ,Custo,_ )),
+             (servico(IdServ,_,Inst,_), consulta(_,_,IdServ,Custo,_)),
              S),
      somaConjVal(S,R).
 
 %-------------------------------------------------------------------------%
 %Extensão do predicado custoTPData : Data , Resultado -> {V,F}
 custoTPData(Data,R) :-
-     solucoes((Custo), consulta( Data,_,_,Custo,_ ), S),
+     solucoes((Custo), consulta(Data,_,_,Custo,_), S),
      somaConjVal(S,R).
 
 
@@ -390,19 +390,19 @@ custoTPData(Data,R) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
 
-evolucao( Termo ) :-
-    solucoes( Invariante,+Termo::Invariante,Lista ),
-    insercao( Termo ),
-    teste( Lista ).
+evolucao(Termo) :-
+    solucoes(Invariante,+Termo::Invariante,Lista),
+    insercao(Termo),
+    teste(Lista).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado que permite a regressão do conhecimento
 
 regressao(Termo) :-
 	  Termo,
-	  solucoes( Invariante,-Termo::Invariante,Lista ),
-	  remover( Termo ),
-    teste( Lista ).
+	  solucoes(Invariante,-Termo::Invariante,Lista),
+	  remover(Termo),
+    teste(Lista).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite encontrar as provas
@@ -419,10 +419,10 @@ construir(S,S).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção do conhecimento
-insercao( Termo ) :-
-    assert( Termo ).
-insercao( Termo ) :-
-    retract( Termo ), !, fail.
+insercao(Termo) :-
+    assert(Termo).
+insercao(Termo) :-
+    retract(Termo), !, fail.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a remoção do conhecimento
@@ -484,10 +484,11 @@ comparaDatas(data(D1, M, A), data(D2, M, A), R) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado somaConjVal: L,R -> {V,F}
 
-somaConjVal( [],0 ).
-somaConjVal( [X|L],R ) :-
-    somaConjVal( L,Y ),
+somaConjVal([],0).
+somaConjVal([X|L],R) :-
+    somaConjVal(L,Y),
     R is X+Y.
+
 
 
 
@@ -516,6 +517,9 @@ carregaBC(Ficheiro) :-
     see(FicheiroAntigo).
 
 
+
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado medico: IdMed, Nome, Idade, IdServ -> {V,F}
 
@@ -533,26 +537,26 @@ medico(7,roberto,48,5).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                         repetido
 
-+medico( IM,_,_,_ ) :: (solucoes( IM, medico( IM,_,_,_ ),S ),
-                            comprimento( S,1 )).
++medico(IM,_,_,_) :: (solucoes(IM, medico( IM,_,_,_ ),S),
+                     comprimento( S,1 )).
 
 % Invariante Estrutural: a idade de cada medico a exercer tem de ser inteira e
 %             estar no intervalo [25,70]
 
-+medico( _,_,I,_ ) :: (integer(I),
-                       I >= 25,
-                       I =< 70).
++medico(_,_,I,_) :: (integer(I),
+                    I >= 25,
+                    I =< 70).
 
 % Invariante Estrutural: nao permitir medicos com mais de uma especialidade/servico
 
-+medico( IM,_,_,IS ) :: (solucoes( (IM,IS), medico( IM,_,_,IS ), S ),
-                        comprimento( S,1 )).
++medico(IM,_,_,IS) :: (solucoes((IM,IS), medico(IM,_,_,IS ), S),
+                      comprimento( S,1 )).
 
 % Invariante Referencial:  nao permitir a remoção dum medico se existirem consultas
 %                          associadas a este.
 
--medico( ID,_,_,_ ) :: (solucoes(ID, consulta(_,_,_,_,ID), S),
-                         comprimento(S,0)).
+-medico(ID,_,_,_) :: (solucoes(ID, consulta(_,_,_,_,ID), S),
+                     comprimento(S,0)).
 
 
 
@@ -560,34 +564,35 @@ medico(7,roberto,48,5).
 % Registar Medico : IdMed, Nome, Idade, IdServ -> {V,F}
 
 registarM(IM,N,I,IS) :-
-   evolucao(medico( medico( IM,N,I,IS ) )).
+   evolucao(medico(IM,N,I,IS)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Medico : IdMed, Nome, Idade, IdServ -> {V,F}
 
 removerM(IM,N,I,IS) :-
-   regressao(medico( IM,N,I,IS )).
+   regressao(medico(IM,N,I,IS)).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado medicosPInst: Inst, Resultado -> {V,F}
 
 medicosPInst(Inst,R) :-
    solucoes((IM,N,I,IS),
-            (medico( IM,N,I,IS ), servico( IS,_,Inst,_ )),
-            R).
+           (medico(IM,N,I,IS), servico(IS,_,Inst,_)),
+           R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado consultasPMed: IdMed, Resultado -> {V,F}
 
 consultasRPMed(IM,R) :-
    solucoes((N,Desc,Inst,Data),
-            (medico( IM,N,_,IS ), consulta( Data,_,_,_,IM ), servico( IS,Desc,Inst,_ )),
-            R).
+           (medico(IM,N,_,IS), consulta(Data,_,_,_,IM), servico(IS,Desc,Inst,_)),
+           R).
 
 %-------------------------------------------------------------------------%
 %Extensão do predicado custoTPMed: IdMed , Resultado -> {V,F}
+
 custoTPMed(IM,R) :-
      solucoes((Custo),
-             (medico( IM,_,_,_ ), consulta( _,_,_,Custo,IM )),
+             (medico(IM,_,_,_), consulta(_,_,_,Custo,IM)),
              S),
      somaConjVal(S,R).
