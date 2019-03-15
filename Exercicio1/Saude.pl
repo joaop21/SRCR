@@ -545,3 +545,22 @@ medico(7,roberto,48,5).
 
 +medico( IM,_,_,IS ) :: (solucoes( (IM,IS), medico( IM,_,_,IS ), S ),
                         comprimento( S,1 )).
+
+% Invariante Referencial:  nao permitir a remoção dum medico se existirem consultas
+%                          associadas a este.
+
+-medico( ID,_,_,_ ) :: (solucoes(ID, consulta(_,_,_,_,ID), S),
+                         comprimento(S,0)).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Registar Medico : IdMed, Nome, Idade, IdServ -> {V,F}
+
+registarM( IM,N,I,ID ) :-
+   evolucao(medico( IM,N,I,ID )).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Medico : IdMed, Nome, Idade, IdServ -> {V,F}
+
+removerM( IM,N,I,ID ) :-
+   regressao(medico( IM,N,I,ID )).
