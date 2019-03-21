@@ -15,44 +15,44 @@
 % SICStus PROLOG: Definicoes iniciais
 
 :- op(900,xfy,'::').
-:- dynamic utente/4.
+:- dynamic utente/5.
 :- dynamic servico/4.
 :- dynamic consulta/5.
 :- dynamic medico/4.
-
+:- dynamic seguro/3.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado utente: IdUt,Nome,Idade,Cidade-> {V,F}
+% Extensao do predicado utente: IdUt,Nome,Idade,Cidade,Seguro-> {V,F}
 
-utente(1,joao,31,guimaraes).
-utente(2,manuel,57,viana).
-utente(3,armando,26,porto).
-utente(4,ricardo,23,famalicao).
-utente(5,maria,40,braga).
-utente(6,miguel,26,guimaraes).
-utente(7,ana,14,braga).
-utente(8,andre,26,amares).
-utente(9,henrique,14,fafe).
-utente(10,diogo,14,braga).
+utente(1,joao,31,guimaraes,1).
+utente(2,manuel,57,viana,0).
+utente(3,armando,26,porto,0).
+utente(4,ricardo,23,famalicao,2).
+utente(5,maria,40,braga,1).
+utente(6,miguel,26,guimaraes,3).
+utente(7,ana,14,braga,3).
+utente(8,andre,26,amares,1).
+utente(9,henrique,14,fafe,0).
+utente(10,diogo,14,braga,2).
 
 
 % Invariante Estrutural:  nao permitir a insercao de conhecimento
 %                         repetido
 
-+utente(IU,_,_,_) :: (solucoes(IU, (utente(IU,_,_,_)), S),
++utente(IU,_,_,_,_) :: (solucoes(IU, (utente(IU,_,_,_,_)), S),
                      comprimento(S,1)).
 
 % Invariante Estrutural: a idade de cada utente tem de ser inteira e
 %             estar no intervalo [0,120]
 
-+utente(_,_,I,_) :: (integer(I),
++utente(_,_,I,_,_) :: (integer(I),
                     I >= 0,
                     I =< 120).
 
 % Invariante Rferencial: um utente so pode ser removido se nao existir consultas
 %                       associadas a este.
 
--utente(ID,_,_,_) :: (solucoes((ID,IDS), consulta(_,ID,IDS,_,_), S),
+-utente(ID,_,_,_,_) :: (solucoes((ID,IDS), consulta(_,ID,IDS,_,_), S),
                      comprimento(S,0)).
 
 
@@ -120,7 +120,7 @@ consulta(data(07,03,2019), 10, 2, 10, 8).
 % Invariante Referencial:  nao permitir a insercao de consultas relativas a utentes
 %                          inexistentes.
 
-+consulta(_,U,_,_,_) :: (utente(U,_,_,_)).
++consulta(_,U,_,_,_) :: (utente(U,_,_,_,_)).
 
 % Invariante Referencial:  nao permitir a insercao de consultas relativas a servicos
 %                          inexistentes.
@@ -167,10 +167,10 @@ isData(data(D, M, A)) :-
 %--------------------------PONTO 1--------------------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Registar Utente : IdUt,Nome,Idade,Cidade-> {V,F}
+% Registar Utente : IdUt,Nome,Idade,Cidade,IdSeguro-> {V,F}
 
-registarU(IU,N,I,C) :-
-    evolucao(utente(IU,N,I,C)).
+registarU(IU,N,I,C,IdS) :-
+    evolucao(utente(IU,N,I,C,IdS)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Registar Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
@@ -191,10 +191,10 @@ registarConsulta(DA,IU,IS,C,IM) :-
 %--------------------------PONTO 2--------------------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Remover Utente : IdUt,Nome,Idade,Cidade-> {V,F}
+% Remover Utente : IdUt,Nome,Idade,Cidade,IdSeguro-> {V,F}
 
-removerU(IU,N,I,C) :-
-    regressao(utente(IU,N,I,C)).
+removerU(IU,N,I,C,IdS) :-
+    regressao(utente(IU,N,I,C,IdS)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Remover Serviço : IdServ,Descrição,Instituição,Cidade -> {V,F}
@@ -231,19 +231,19 @@ instituicoes(R) :-
 % Extensao do predicado utentesPNome: Nome, Resultado -> {V,F}
 
 utentesPNome(Nome,R) :-
-    solucoes((IU,Nome,I,C), utente(IU,Nome,I,C), R).
+    solucoes((IU,Nome,I,C), utente(IU,Nome,I,C,IdS), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado utentesPIdade: Idade, Resultado -> {V,F}
 
 utentesPIdade(Idade,R) :-
-    solucoes((IU,N,Idade,C), utente(IU,N,Idade,C), R).
+    solucoes((IU,N,Idade,C), utente(IU,N,Idade,C,IdS), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado utentesPCidade: Cidade, Resultado -> {V,F}
 
 utentesPCidade(Cidade,R) :-
-    solucoes((IU,N,I,Cidade), utente(IU,N,I,Cidade), R).
+    solucoes((IU,N,I,Cidade), utente(IU,N,I,Cidade,IdS), R).
 
 % ----------------------------------------------------------------------------------------------------
 % Extensao do predicado servicosPDesc: Descrição, Resultado -> {V,F}
@@ -304,7 +304,7 @@ servicosPCusto(Custo,R) :-
 
 utentesPServ(Descricao,R) :-
     solucoes((IdUt,Nome),
-            (servico(IDS,Descricao,_,_), consulta(_,IdUt,IDS,_,_), utente(IdUt,Nome,_,_)),
+            (servico(IDS,Descricao,_,_), consulta(_,IdUt,IDS,_,_), utente(IdUt,Nome,_,_,_)),
             S),
     removeReps(S,R).
 
@@ -313,7 +313,7 @@ utentesPServ(Descricao,R) :-
 
 utentesPInst(Inst,R) :-
     solucoes((IdUt,Nome),
-            (servico(IDS,_,Inst,_), consulta(_,IdUt,IDS,_,_), utente(IdUt,Nome,_,_)),
+            (servico(IDS,_,Inst,_), consulta(_,IdUt,IDS,_,_), utente(IdUt,Nome,_,_,_)),
             S),
     removeReps(S,R).
 
@@ -326,7 +326,7 @@ utentesPInst(Inst,R) :-
 
 servicoRPUtente(IDU,R):-
 	   solucoes((Desc,I,C),
-              (utente(IDU,_,_,_), consulta(_,IDU,IDS,_,_), servico(IDS,Desc,I,C)),
+              (utente(IDU,_,_,_,_), consulta(_,IDU,IDS,_,_), servico(IDS,Desc,I,C)),
               S),
 	   removeReps(S,R).
 
@@ -380,9 +380,6 @@ custoTPInst(Inst,R) :-
 custoTPData(Data,R) :-
      solucoes((Custo), consulta(Data,_,_,Custo,_), S),
      somaConjVal(S,R).
-
-
-
 
 
 %--------------------------PREDICADOS AUXILIARES--------------------------%
@@ -596,3 +593,58 @@ custoTPMed(IM,R) :-
              (medico(IM,_,_,_), consulta(_,_,_,Custo,IM)),
              S),
      somaConjVal(S,R).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado seguro: IdSeg,Descrição,Taxa -> {V,F}
+
+seguro(0,nenhum,0).
+seguro(1,adse,0.4).
+seguro(2,medis,0.3).
+seguro(3,multicare,0.2).
+
+% Invariante Estrutural:  nao permitir a insercao de conhecimento
+%                         repetido
+
++seguro(IdSeg,_) :: (solucoes(IdSeg, (seguro(IdSeg,_)), S),
+                     comprimento(S,1)).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Registar Seguro : IdSeg, Descrição -> {V,F}
+
+registarS(IdSeg,D) :-
+   evolucao(seguro(IdSeg,D)).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Remover Seguro : IdSeg, Descrição -> {V,F}
+
+removerS(IdSeg,D) :-
+   regressao(seguro(IdSeg,D)).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado custosTaxados: Custos,Taxa,Resultado-> {V,F}
+
+custosTaxados([],T,[]).
+
+custosTaxados([X|L],T,[Y|LN]) :-
+              custosTaxados(L,T,LN),
+              Y is X*T.
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado retornosPUtente: IdUt,Resultado-> {V,F}
+
+retornosPUtente(IdUt,R) :-
+   solucoes((Custo), consulta(_,IdUt,_,Custo,_), S),
+      utente(IdUt,_,_,_,IdSeg),
+       seguro(IdSeg,_,T),
+        custosTaxados(S,T,L),
+          somaConjVal(L,R).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado gastoPUtente: IdUt,Resultado-> {V,F}
+
+gastoPUtente(IdUt,R) :-
+    custoTPUtente(IdUt,X),
+    retornosPUtente(IdUt,Y),
+    R is X-Y.
