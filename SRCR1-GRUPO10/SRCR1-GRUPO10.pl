@@ -610,16 +610,16 @@ seguro(3,multicare,0.2).
                      comprimento(S,1)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Registar Seguro : IdSeg, Descrição -> {V,F}
+% Registar Seguro : IdSeg, Descrição, Taxa -> {V,F}
 
-registarS(IdSeg,D) :-
-   evolucao(seguro(IdSeg,D)).
+registarS(IdSeg,D,T) :-
+   evolucao(seguro(IdSeg,D,T)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Remover Seguro : IdSeg, Descrição -> {V,F}
+% Remover Seguro : IdSeg, Descrição, Taxa -> {V,F}
 
-removerS(IdSeg,D) :-
-   regressao(seguro(IdSeg,D)).
+removerS(IdSeg,D,T) :-
+   regressao(seguro(IdSeg,D,T)).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado custosTaxados: Custos,Taxa,Resultado-> {V,F}
