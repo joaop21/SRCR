@@ -593,7 +593,7 @@ consultasRPMed(IM,R) :-
 
 custoTPMed(IM,R) :-
      solucoes((Custo),
-             (medico(IM,_,_,_), consulta(_,_,_,Custo,IM)),
+             (consulta(_,_,_,Custo,IM)),
              S),
      somaConjVal(S,R).
 
