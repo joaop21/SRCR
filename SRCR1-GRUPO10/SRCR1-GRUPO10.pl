@@ -326,7 +326,7 @@ utentesPInst(Inst,R) :-
 
 servicoRPUtente(IDU,R):-
 	   solucoes((Desc,I,C),
-              (utente(IDU,_,_,_,_), consulta(_,IDU,IDS,_,_), servico(IDS,Desc,I,C)),
+              (consulta(_,IDU,IDS,_,_), servico(IDS,Desc,I,C)),
               S),
 	   removeReps(S,R).
 
@@ -359,7 +359,10 @@ servicosRPCidade(Cidade,R):-
 %Extensão do predicado custoTPUtente : Utente , Resultado -> {V,F}
 custoTPUtente(IdUt,R) :-
      solucoes((Custo), consulta(_,IdUt,_,Custo,_), S),
-     somaConjVal(S,R).
+     somaConjVal(S,X),
+     retornosPUtente(IdUt,Y),
+     R is X-Y.
+
 
 %-------------------------------------------------------------------------%
 %Extensão do predicado custoTPServico : Servico , Resultado -> {V,F}
@@ -640,11 +643,3 @@ retornosPUtente(IdUt,R) :-
        seguro(IdSeg,_,T),
         custosTaxados(S,T,L),
           somaConjVal(L,R).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado gastoPUtente: IdUt,Resultado-> {V,F}
-
-gastoPUtente(IdUt,R) :-
-    custoTPUtente(IdUt,X),
-    retornosPUtente(IdUt,Y),
-    R is X-Y.
