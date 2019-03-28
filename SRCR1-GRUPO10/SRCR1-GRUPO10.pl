@@ -24,18 +24,6 @@
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado utente: IdUt,Nome,Idade,Cidade,Seguro-> {V,F}
 
-utente(1,joao,31,guimaraes,1).
-utente(2,manuel,57,viana,0).
-utente(3,armando,26,porto,0).
-utente(4,ricardo,23,famalicao,2).
-utente(5,maria,40,braga,1).
-utente(6,miguel,26,guimaraes,3).
-utente(7,ana,14,braga,3).
-utente(8,andre,26,amares,1).
-utente(9,henrique,14,fafe,0).
-utente(10,diogo,14,braga,2).
-
-
 % Invariante Estrutural:  nao permitir a insercao de conhecimento
 %                         repetido
 
@@ -60,15 +48,6 @@ utente(10,diogo,14,braga,2).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado serviço: IdServ,Descrição,Instituição,Cidade -> {V,F}
 
-servico(1,cardiologia,hospitaldaluz,guimaraes).
-servico(2,pediatria,hospitalbraga,braga).
-servico(3,cirurgia,hospitalbraga,braga).
-servico(4,neurologia,hsj,porto).
-servico(5,ginecologia,hospitalbraga,braga).
-servico(6,psiquiatria,hsog,guimaraes).
-servico(7,oftamologia,hsog,guimaraes).
-
-
 % Invariante Estrutural:  nao permitir a insercao de conhecimento
 %                         repetido
 
@@ -90,21 +69,6 @@ servico(7,oftamologia,hsog,guimaraes).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado consulta: Data,IdUt,IdServ,Custo,IdMed-> {V,F}
-
-consulta(data(01,02,2019), 1, 6, 25, 4).
-consulta(data(13,02,2019), 3, 4, 30, 6).
-consulta(data(13,02,2019), 5, 5, 35, 7).
-consulta(data(14,02,2019), 2, 7, 9, 1).
-consulta(data(20,02,2019), 7, 2, 20, 2).
-consulta(data(23,02,2019), 8, 7, 5, 1).
-consulta(data(23,02,2019), 5, 5, 24, 7).
-consulta(data(25,02,2019), 6, 7, 40, 1).
-consulta(data(29,02,2019), 7, 2, 65, 8).
-consulta(data(04,03,2019), 9, 2, 95, 2).
-consulta(data(07,03,2019), 1, 1, 10, 3).
-consulta(data(07,03,2019), 6, 1, 10, 5).
-consulta(data(07,03,2019), 10, 2, 10, 8).
-
 
 % Invariante Estrutural:  nao permitir a um utente que tenha mais de 10 consultas
 %                          por dia.
@@ -498,7 +462,7 @@ somaConjVal([X|L],R) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite guardar a base de conhecimento num ficheiro
 
-guardaBC(Ficheiro) :-
+guardaFactos(Ficheiro) :-
     tell(Ficheiro),
     listing,
     told.
@@ -506,7 +470,7 @@ guardaBC(Ficheiro) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite carregar a base de conhecimento dum ficheiro
 
-carregaBC(Ficheiro) :-
+carregaFactos(Ficheiro) :-
     seeing(FicheiroAntigo),
     see(Ficheiro),
     repeat,
@@ -522,16 +486,6 @@ carregaBC(Ficheiro) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado medico: IdMed, Nome, Idade, IdServ -> {V,F}
-
-medico(1,ricardo,46,7).
-medico(2,andre,35,2).
-medico(3,rui,56,1).
-medico(4,helena,42,6).
-medico(5,maria,61,1).
-medico(6,joana,53,4).
-medico(7,roberto,48,5).
-
-
 
 
 % Invariante Estrutural: nao permitir a insercao de conhecimento
@@ -600,11 +554,6 @@ custoTPMed(IM,R) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado seguro: IdSeg,Descrição,Taxa -> {V,F}
-
-seguro(0,nenhum,0).
-seguro(1,adse,0.4).
-seguro(2,medis,0.3).
-seguro(3,multicare,0.2).
 
 % Invariante Estrutural:  nao permitir a insercao de conhecimento
 %                         repetido

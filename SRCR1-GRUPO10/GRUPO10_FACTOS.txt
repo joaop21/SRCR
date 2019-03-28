@@ -1,0 +1,45 @@
+consulta(data(1,2,2019), 1, 6, 25, 4).
+consulta(data(13,2,2019), 3, 4, 30, 6).
+consulta(data(13,2,2019), 5, 5, 35, 7).
+consulta(data(14,2,2019), 2, 7, 9, 1).
+consulta(data(20,2,2019), 7, 2, 20, 2).
+consulta(data(23,2,2019), 8, 7, 5, 1).
+consulta(data(23,2,2019), 5, 5, 24, 7).
+consulta(data(25,2,2019), 6, 7, 40, 1).
+consulta(data(29,2,2019), 7, 2, 65, 8).
+consulta(data(4,3,2019), 9, 2, 95, 2).
+consulta(data(7,3,2019), 1, 1, 10, 3).
+consulta(data(7,3,2019), 6, 1, 10, 5).
+consulta(data(7,3,2019), 10, 2, 10, 8).
+
+medico(1, ricardo, 46, 7).
+medico(2, andre, 35, 2).
+medico(3, rui, 56, 1).
+medico(4, helena, 42, 6).
+medico(5, maria, 61, 1).
+medico(6, joana, 53, 4).
+medico(7, roberto, 48, 5).
+
+seguro(0, nenhum, 0).
+seguro(1, adse, 0.4).
+seguro(2, medis, 0.3).
+seguro(3, multicare, 0.2).
+
+servico(1, cardiologia, hospitaldaluz, guimaraes).
+servico(2, pediatria, hospitalbraga, braga).
+servico(3, cirurgia, hospitalbraga, braga).
+servico(4, neurologia, hsj, porto).
+servico(5, ginecologia, hospitalbraga, braga).
+servico(6, psiquiatria, hsog, guimaraes).
+servico(7, oftamologia, hsog, guimaraes).
+
+utente(1, joao, 31, guimaraes, 1).
+utente(2, manuel, 57, viana, 0).
+utente(3, armando, 26, porto, 0).
+utente(4, ricardo, 23, famalicao, 2).
+utente(5, maria, 40, braga, 1).
+utente(6, miguel, 26, guimaraes, 3).
+utente(7, ana, 14, braga, 3).
+utente(8, andre, 26, amares, 1).
+utente(9, henrique, 14, fafe, 0).
+utente(10, diogo, 14, braga, 2).
