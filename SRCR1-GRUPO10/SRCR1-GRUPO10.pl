@@ -461,6 +461,7 @@ somaConjVal([X|L],R) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite guardar a base de conhecimento num ficheiro
+% guardaFactos: Ficheiro -> {V,F}
 
 guardaFactos(Ficheiro) :-
     tell(Ficheiro),
@@ -469,16 +470,17 @@ guardaFactos(Ficheiro) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite carregar a base de conhecimento dum ficheiro
+% carregaFactos: Ficheiro -> {V,F}
 
 carregaFactos(Ficheiro) :-
-    seeing(FicheiroAntigo),
+    seeing(InputAtual),
     see(Ficheiro),
     repeat,
     read(Termo),
     (Termo == end_of_file -> true ;
     assert(Termo),fail),
     seen,
-    see(FicheiroAntigo).
+    see(InputAtual).
 
 
 
