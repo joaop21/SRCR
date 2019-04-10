@@ -18,6 +18,7 @@
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: definicoes iniciais
 
+:- dynamic '-'/1.
 :- op( 900,xfy,'::' ).
 :- dynamic utente/5.
 :- dynamic servico/4.
@@ -61,6 +62,47 @@
     nao(excecao(seguro(IdSeg,D,T))).
 
 
+%--------------------------REPRESENTACAO CONHECIMENTO IMPERFEITO INCERTO--------------------------%
+
+% Não sabemos qual a Instituição que prestou o serviço 9 correspondente a Fisiatria, apenas sabemos que foi realizada em Braga 
+servico(9,fisiatria,xpto021,braga).
+excecao( servico(IDS,D,I,C) ) :-
+         servico(IDS,D,xpto021,C).
+
+% Não sabemos qual é a cidade onde reside o Utente 11 chamado Alfredo, com 86 anos e portador do seguro 2
+utente(11,alfredo,86,xpto022,2).
+excecao( utente(IU,N,I,C,IdS) ) :-
+         utente(IU,N,I,xpto022,IdS).
+
+% Não sabemos o serviço que o médico 8, chamado António e com 37 anos realiza
+medico(8,antonio,37,xpto023).
+excecao( medico(IM,N,I,S) ) :-
+         medico(IM,N,I,xpto023).
+
+
+%--------------------------REPRESENTACAO CONHECIMENTO IMPERFEITO IMPRECISO--------------------------%
+
+% Não sabemos se o serviço 10 de pneumologia foi realizado no Hospital de Braga ou no Hospital Senhora da Oliveira em Guimarães
+excecao( servico(10,pneumologia,hospitalbraga,braga) ).
+excecao( servico(10,pneumologia,hsog,guimaraes) ).
+
+% Não qual a taxa do Seguro 3 Allianz, apenas sabemos que está entre 0.2 e 0.25
+excecao( seguro(3,allianz,X) ) :-
+         X >= 0.2,
+         X =< 0.25.
+
+%--------------------------REPRESENTACAO CONHECIMENTO IMPERFEITO INTERDITO--------------------------%
+
+% Nunca será possivel saber o custo da consulta realizada no dia 10 de Abril de 2019 pelo médico 1 que frequenta o serviço 7.
+% Esta consulta foi requisitada pelo utente 2
+consulta(data(10,4,2019),2,7,xpto024,1).
+excecao( consulta(DA,IU,IS,C,IM) ) :-
+         consulta(DA,IU,IS,xpto024,IM).
+nulo(xpto024).
+  
++consulta( DA,IU,IS,C,IM ) :: (solucoes((CS), (consulta(data(10,4,2019),2,7,CS,1), nao(nulo(CS))), S),
+                    comprimento( S,N ), N == 0
+                    ).
 
 
 %--------------------------EVOLUCAO E REGRESSAO DO CONHECIMENTO--------------------------%
