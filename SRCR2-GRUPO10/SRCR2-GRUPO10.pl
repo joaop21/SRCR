@@ -363,6 +363,22 @@ evolucaoPerfeito(-seguro(IdSeguro,Descricao,Taxa)):-
 	si(-seguro(IdSeguro,Descricao,Taxa), verdadeiro),
     evolucao(-seguro(IdSeguro,Descricao,Taxa)).
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado regressaoPerfeito: regressaoPerfeito -> {V,F}
+
+% Regressao de conhecimento perfeito que remove conhecimento perfeito
+
+regressaoPerfeito(Termo) :-
+    si(Termo,verdadeiro),
+    regressao(Termo).
+
+regressaoPerfeito(-Termo) :-
+    si(-Termo,verdadeiro),
+    regressao(-Termo).
+
+
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
