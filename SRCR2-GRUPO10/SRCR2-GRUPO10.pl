@@ -235,6 +235,27 @@ nulo(xpto024).
 %--------------------------EVOLUCAO E REGRESSAO DO CONHECIMENTO--------------------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado evolucaoPerfeito: evolucaoPerfeito -> {V,F}
+
+% Evolucao de conhecimento perfeito que remove conhecimento impreciso
+
+evolucaoPerfeito(Termo) :-
+	solucoes(Invariante, +Termo::Invariante, Lista),
+	removerImpreciso(Termo),
+    insercao(utente(IdUt,Nome,Idade,Morada)),
+    testa(Lista).
+
+evolucaoPerfeito(-Termo) :-
+	solucoes(Invariante, +(-Termo)::Invariante, Lista),
+	removerImpreciso(Termo),
+    insercao(-Termo),
+    testa(Lista).
+
+removerImpreciso(utente(IdUt, Nome, Idade, Morada)) :-
+	remover(excecao(utente(IdUt,_,_,_))),
+    remover(utente(IdUt,Nome,Idade,Morada)).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
 
 evolucao(Termo) :-
@@ -249,7 +270,7 @@ regressao(Termo) :-
 	  Termo,
 	  solucoes(Invariante,-Termo::Invariante,Lista),
 	  remover(Termo),
-    teste(Lista).
+      teste(Lista).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite encontrar as provas

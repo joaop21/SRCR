@@ -43,3 +43,4 @@ utente(7, ana, 14, braga, 3).
 utente(8, andre, 26, amares, 1).
 utente(9, henrique, 14, fafe, 0).
 utente(10, diogo, 14, braga, 2).
+utente(11, analide, 45, guimaraes, 2).
