@@ -37,6 +37,36 @@
 % consulta: Data,IdUt,IdServ,Custo,IdMed-> {V,F,D}
 % medico: IdMed, Nome, Idade, IdServ -> {V,F,D}
 % seguro: IdSeg,Descrição,Taxa -> {V,F,D}
+% data: Dia, Mes, Ano -> {V,F}
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado data: D, M, A -> {V,F}
+
+data(D, M, A) :-
+	   member(M, [1,3,5,7,8,10,12]),
+	   D >= 1,
+	   D =< 31.
+data(D, M, A) :-
+	   member(M, [4,6,9,11]),
+	   D >= 1,
+	   D =< 30.
+data(D, 2, A) :- % ano nao bissexto
+	   A mod 4 =\= 0,
+	   D >= 1,
+	   D =< 28.
+data(D, 2, A) :-
+	   A mod 4 =:= 0,
+	   D >= 1,
+     D =< 29.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado isData: X -> {V,F}
+
+isData(data(D, M, A)) :-
+    data(D, M, A).
+
+
+
 
 %--------------------------REPRESENTACAO CONHECIMENTO POSITIVO--------------------------%
 
@@ -123,7 +153,7 @@ excecao( servico(10,pneumologia,hospitalbraga,braga) ).
 excecao( servico(10,pneumologia,hsog,guimaraes) ).
 
 % Não sabemos qual a taxa do Seguro 3 Allianz, apenas sabemos que está entre 0.2 e 0.25
-excecao( seguro(3,allianz,X) ) :-
+excecao( seguro(5,allianz,X) ) :-
          X >= 0.2,
          X =< 0.25.
 
@@ -237,23 +267,18 @@ nulo(xpto024).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado evolucaoPerfeito: evolucaoPerfeito -> {V,F}
 
-% Evolucao de conhecimento perfeito que remove conhecimento impreciso
+% Evolucao de conhecimento perfeito que remove conhecimento imperfeito
 
-evolucaoPerfeito(Termo) :-
-	solucoes(Invariante, +Termo::Invariante, Lista),
-	removerImpreciso(Termo),
-    insercao(utente(IdUt,Nome,Idade,Morada)),
-    testa(Lista).
 
-evolucaoPerfeito(-Termo) :-
-	solucoes(Invariante, +(-Termo)::Invariante, Lista),
-	removerImpreciso(Termo),
-    insercao(-Termo),
-    testa(Lista).
+evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
+	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
+	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista),
+	remocaoLista(utente(Id,Nome,Idade,Morada,Seguro), Lista).
 
-removerImpreciso(Termo) :-
-	remover(excecao(Termo)),
-    remover(Termo).
+evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
+	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
+    evolucao(utente(Id,Nome,Idade,Morada,Seguro)).
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
@@ -298,6 +323,24 @@ remover(Termo) :-
     retract(Termo).
 remover(Termo) :-
     assert(Termo), !, fail.
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a remoção duma lista de conhecimento
+removerLista( Termo,L ) :-
+    retractLista( L ),
+    evolucao(Termo).
+removerLista( Termo,L) :-
+    assertLista( L ),!,fail.
+
+retractLista([]).
+retractLista([X|L]):-
+		retract(X),
+		retractLista(L).
+
+assertLista([]).
+assertLista([X|L]):-
+		assert(X),
+assertLista(L).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que realiza o teste do conhecimento
