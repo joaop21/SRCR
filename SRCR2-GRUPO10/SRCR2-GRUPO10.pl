@@ -251,9 +251,9 @@ evolucaoPerfeito(-Termo) :-
     insercao(-Termo),
     testa(Lista).
 
-removerImpreciso(utente(IdUt, Nome, Idade, Morada)) :-
-	remover(excecao(utente(IdUt,_,_,_))),
-    remover(utente(IdUt,Nome,Idade,Morada)).
+removerImpreciso(Termo) :-
+	remover(excecao(Termo)),
+    remover(Termo).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
