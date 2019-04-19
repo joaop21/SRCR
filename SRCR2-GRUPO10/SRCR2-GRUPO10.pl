@@ -65,6 +65,30 @@ data(D, 2, A) :-
 isData(data(D, M, A)) :-
     data(D, M, A).
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado comparaDatas: Data1, Data2, R -> {V,F}
+%
+% O predicado comparaDatas compara duas datas. O resultado da comparacao e:
+%   <  se a primeira data for anterior à segunda;
+%   =  se as datas foram iguais;
+%   >  se a primeira data for posterior à segunda.
+
+comparaDatas(data(_, _, A1), data(_, _, A2), R) :-
+	A1 \= A2,
+    compare(R, A1, A2).
+comparaDatas(data(_, M1, A), data(_, M2, A), R) :-
+	M1 \= M2,
+    compare(R, M1, M2).
+comparaDatas(data(D1, M, A), data(D2, M, A), R) :-
+    compare(R, D1, D2).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado comprimento: L,N -> {V,F}
+
+comprimento([], 0).
+comprimento([H|T], N) :-
+    comprimento(T,S),
+    N is S+1.
 
 
 
@@ -269,7 +293,7 @@ nulo(xpto024).
 
 % Evolucao de conhecimento perfeito que remove conhecimento imperfeito
 
-
+% UTENTE
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
 	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista),
@@ -278,6 +302,66 @@ evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
     evolucao(utente(Id,Nome,Idade,Morada,Seguro)).
+
+evolucaoPerfeito(-utente(Id,Nome,Idade,Morada,Seguro)):-
+	si(-utente(Id,Nome,Idade,Morada,Seguro), verdadeiro),
+    evolucao(-utente(Id,Nome,Idade,Morada,Seguro)).
+
+% SERVICO
+evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
+	si(servico(Id,Descricao,Instituicao,Cidade), desconhecido),
+	solucoes(servico(Id,D,I,C), servico(Id,D,I,C), Lista),
+	remocaoLista(servico(Id,Descricao,Instituicao,Cidade), Lista).
+
+evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
+	si(servico(Id,Descricao,Instituicao,Cidade), falso),
+    evolucao(servico(Id,Descricao,Instituicao,Cidade)).
+
+evolucaoPerfeito(-servico(Id,Descricao,Instituicao,Cidade)):-
+	si(-servico(Id,Descricao,Instituicao,Cidade), verdadeiro),
+    evolucao(-servico(Id,Descricao,Instituicao,Cidade)).
+
+% CONSULTA
+evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
+	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), desconhecido),
+	solucoes(consulta(D,IdU,IdS,C,IdM), consulta(D,IdU,IdS,C,IdM), Lista),
+	remocaoLista(consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista).
+
+evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
+	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), falso),
+    evolucao(consulta(Data,IdUtente,IdServico,Custo,IdMedico)).
+
+evolucaoPerfeito(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
+	si(-consulta(Data,IdUtente,IdServico,Custo,IdMedico), verdadeiro),
+    evolucao(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)).
+
+% MÉDICO
+evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
+	si(medico(IdMedico,Nome,Idade,IdServico), desconhecido),
+	solucoes(medico(IdMedico,N,I,IdS), medico(IdMedico,N,I,IdS), Lista),
+	remocaoLista(medico(IdMedico,Nome,Idade,IdServico), Lista).
+
+evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
+	si(medico(IdMedico,Nome,Idade,IdServico), falso),
+    evolucao(medico(IdMedico,Nome,Idade,IdServico)).
+
+evolucaoPerfeito(-medico(IdMedico,Nome,Idade,IdServico)):-
+	si(-medico(IdMedico,Nome,Idade,IdServico), verdadeiro),
+    evolucao(-medico(IdMedico,Nome,Idade,IdServico)).
+
+% SEGURO
+evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
+	si(seguro(IdSeguro,Descricao,Taxa), desconhecido),
+	solucoes(seguro(IdSeguro,D,T), seguro(IdSeguro,D,T), Lista),
+	remocaoLista(seguro(IdSeguro,Descricao,Taxa), Lista).
+
+evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
+	si(seguro(IdSeguro,Descricao,Taxa), falso),
+    evolucao(seguro(IdSeguro,Descricao,Taxa)).
+
+evolucaoPerfeito(-seguro(IdSeguro,Descricao,Taxa)):-
+	si(-seguro(IdSeguro,Descricao,Taxa), verdadeiro),
+    evolucao(-seguro(IdSeguro,Descricao,Taxa)).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
