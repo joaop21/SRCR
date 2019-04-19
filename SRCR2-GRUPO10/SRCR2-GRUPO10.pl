@@ -297,7 +297,7 @@ nulo(xpto024).
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
 	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista),
-	remocaoLista(utente(Id,Nome,Idade,Morada,Seguro), Lista).
+	removerLista(utente(Id,Nome,Idade,Morada,Seguro), Lista).
 
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
@@ -311,7 +311,7 @@ evolucaoPerfeito(-utente(Id,Nome,Idade,Morada,Seguro)):-
 evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
 	si(servico(Id,Descricao,Instituicao,Cidade), desconhecido),
 	solucoes(servico(Id,D,I,C), servico(Id,D,I,C), Lista),
-	remocaoLista(servico(Id,Descricao,Instituicao,Cidade), Lista).
+	removerLista(servico(Id,Descricao,Instituicao,Cidade), Lista).
 
 evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
 	si(servico(Id,Descricao,Instituicao,Cidade), falso),
@@ -325,7 +325,7 @@ evolucaoPerfeito(-servico(Id,Descricao,Instituicao,Cidade)):-
 evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), desconhecido),
 	solucoes(consulta(D,IdU,IdS,C,IdM), consulta(D,IdU,IdS,C,IdM), Lista),
-	remocaoLista(consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista).
+	removerLista(consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista).
 
 evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), falso),
@@ -339,7 +339,7 @@ evolucaoPerfeito(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
 	si(medico(IdMedico,Nome,Idade,IdServico), desconhecido),
 	solucoes(medico(IdMedico,N,I,IdS), medico(IdMedico,N,I,IdS), Lista),
-	remocaoLista(medico(IdMedico,Nome,Idade,IdServico), Lista).
+	removerLista(medico(IdMedico,Nome,Idade,IdServico), Lista).
 
 evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
 	si(medico(IdMedico,Nome,Idade,IdServico), falso),
@@ -353,7 +353,7 @@ evolucaoPerfeito(-medico(IdMedico,Nome,Idade,IdServico)):-
 evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
 	si(seguro(IdSeguro,Descricao,Taxa), desconhecido),
 	solucoes(seguro(IdSeguro,D,T), seguro(IdSeguro,D,T), Lista),
-	remocaoLista(seguro(IdSeguro,Descricao,Taxa), Lista).
+	removerLista(seguro(IdSeguro,Descricao,Taxa), Lista).
 
 evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
 	si(seguro(IdSeguro,Descricao,Taxa), falso),
