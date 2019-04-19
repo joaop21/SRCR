@@ -324,7 +324,7 @@ evolucaoPerfeito(-servico(Id,Descricao,Instituicao,Cidade)):-
 % CONSULTA
 evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), desconhecido),
-	solucoes(consulta(D,IdU,IdS,C,IdM), consulta(D,IdU,IdS,C,IdM), Lista),
+	solucoes(consulta(Data,IdUtente,IdServico,Custo,IdMedico), consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista),
 	removerLista(consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista).
 
 evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
