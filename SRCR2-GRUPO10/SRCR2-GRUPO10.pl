@@ -29,6 +29,7 @@
 :- dynamic consulta/5.
 :- dynamic medico/4.
 :- dynamic seguro/3.
+:- dynamic excecao/1.
 
 :- dynamic '-'/1.
 
@@ -133,6 +134,7 @@ comprimento([H|T], N) :-
 
 % Não existe um utente de 50 anos com id 11 e nome rafa, que viva em guimaraes sem seguro.
 -utente(11,rafa,50,guimaraes,0).
+conhecimentoPerfeito(11).
 
 % Não existe um serviço de neurologia, com id 8, no hsog em guimaraes.
 -servico(8, neurologia, hsog, guimaraes).
@@ -392,6 +394,27 @@ regressaoPerfeito(-Termo) :-
     si(-Termo,verdadeiro),
     regressao(-Termo).
 
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Evolucao de conhecimento incerto
+
+% Evolucao de conhecimento incerto acerca da morada dum utente
+
+evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
+	si(utente(IdUt, Nome, Idade, Morada,Seguro),falso),
+	assert((excecao(utente(Id,N,I,M,S)) :-
+	       utente(Id,N,I,Morada,S))),
+	assert(utente(IdUt, Nome, Idade, Morada, Seguro)),
+	assert(conhecimentoIncertoMorada(utente(IdUt,Morada))).
+
+% Evolucao de conhecimento incerto acerca da morada dum utente
+
+evolucaoIncertoIdade(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
+	si(utente(IdUt, Nome, Idade, Morada,Seguro),falso),
+	assert((excecao(utente(Id,N,I,M,S)) :-
+	       utente(Id,N,Idade,M,S))),
+	assert(utente(IdUt, Nome, Idade, Morada, Seguro)),
+	assert(conhecimentoIncertoMorada(utente(IdUt,Idade))).
 
 
 

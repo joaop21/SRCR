@@ -34,12 +34,22 @@ servico(6, psiquiatria, hsog, guimaraes).
 servico(7, oftamologia, hsog, guimaraes).
 
 utente(1, joao, 31, guimaraes, 1).
+conhecimentoPerfeito(1).
 utente(2, manuel, 57, viana, 0).
+conhecimentoPerfeito(2).
 utente(3, armando, 26, porto, 0).
+conhecimentoPerfeito(3).
 utente(4, ricardo, 23, famalicao, 2).
+conhecimentoPerfeito(4).
 utente(5, maria, 40, braga, 1).
+conhecimentoPerfeito(5).
 utente(6, miguel, 26, guimaraes, 3).
+conhecimentoPerfeito(6).
 utente(7, ana, 14, braga, 3).
+conhecimentoPerfeito(7).
 utente(8, andre, 26, amares, 1).
+conhecimentoPerfeito(8).
 utente(9, henrique, 14, fafe, 0).
+conhecimentoPerfeito(9).
 utente(10, diogo, 14, braga, 2).
+conhecimentoPerfeito(10).
