@@ -195,8 +195,7 @@ excecao( consulta(DA,IU,IS,C,IM) ) :-
          consulta(DA,IU,IS,xpto024,IM).
 nulo(xpto024).
 +consulta( DA,IU,IS,C,IM ) :: (solucoes((CS), (consulta(data(10,4,2019),2,7,CS,1), nao(nulo(CS))), S),
-                    comprimento( S,N ), N == 0
-                    ).
+                    comprimento( S,N ), N == 0 ).
 
 
 
@@ -399,6 +398,7 @@ regressaoPerfeito(-Termo) :-
 % Evolucao de conhecimento incerto
 
 % Evolucao de conhecimento incerto acerca da morada dum utente
+% Extensao do predicado evolucaoIncertoMorada: Utente -> {V,F}
 
 evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	si(utente(IdUt, Nome, Idade, Morada,Seguro),falso),
@@ -408,13 +408,69 @@ evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	assert(conhecimentoIncertoMorada(utente(IdUt,Morada))).
 
 % Evolucao de conhecimento incerto acerca da morada dum utente
+% Extensao do predicado evolucaoIncertoIdade: Utente -> {V,F}
 
 evolucaoIncertoIdade(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	si(utente(IdUt, Nome, Idade, Morada,Seguro),falso),
 	assert((excecao(utente(Id,N,I,M,S)) :-
 	       utente(Id,N,Idade,M,S))),
 	assert(utente(IdUt, Nome, Idade, Morada, Seguro)),
-	assert(conhecimentoIncertoMorada(utente(IdUt,Idade))).
+	assert(conhecimentoIncertoIdade(utente(IdUt,Idade))).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Evolucao de conhecimento impreciso
+
+% Extensao do predicado evolucaoImpreciso: [Utente] -> {V,F}
+
+evolucaoImpreciso([utente(IdUt, Nome, Idade, Morada, Seguro)|T]) :-
+	T \= [],
+	mesmoId(T, IdUt),
+	nenhumPerfeito([utente(IdUt, Nome, Idade, Morada, Seguro)|T]),
+	removerConhecimentoIncerto(utente(IdUt, Nome, Idade, Morada, Seguro)),
+	insereExcecoes([utente(IdUt, Nome, Idade, Morada, Seguro)|T]).
+
+
+mesmoId([], _).
+mesmoId([utente(Id1, _, _, _, _) | T], Id2) :-
+	Id1 == Id2,
+mesmoId(T, Id2).
+
+
+nenhumPerfeito([]).
+nenhumPerfeito([H|T]) :-
+	si(H,falso),
+	nenhumPerfeito(T).
+nenhumPerfeito([H|T]) :-
+	si(H,desconhecido),
+	nenhumPerfeito(T).
+
+
+removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
+	conhecimentoIncertoIdade(utente(IdUt,I)),
+	retract((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
+	retract(utente(IdUt, _, _ , _, _)),
+	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
+removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
+	conhecimentoIncertoMorada(utente(IdUt,I)),
+	retract((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),
+	retract(utente(IdUt, _, _ , _, _)),
+	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
+removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)).
+
+
+insereExcecoes([]).
+insereExcecoes([utente(IdUt, Nome, Idade, Morada, Seguro)|T]) :-
+	assert(excecao(utente(IdUt, Nome, Idade, Morada, Seguro))),
+	insereExcecoes(T),
+	assert(conhecimentoImpreciso(utente(IdUt))).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Evolucao de conhecimento interdito
+
+% Extensao do predicado evolucaoInterdito: Utente -> {V,F}
+
 
 
 
