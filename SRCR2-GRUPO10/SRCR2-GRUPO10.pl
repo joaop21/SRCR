@@ -137,7 +137,7 @@ comprimento([H|T], N) :-
 % Não existe um serviço de neurologia, com id 8, no hsog em guimaraes.
 -servico(8, neurologia, hsog, guimaraes).
 
-% Não existe uma consulta do dia 07/03/2019 do utente com o id 10 para o serviço com o id 3,
+% Não existe uma consulta do dia 07/03/2019, do utente com o id 10 para o serviço com o id 3,
 % no qual o custo monetário é 10 e o id do médico é 8.
 -consulta(data(7,3,2019), 10, 3, 10, 8).
 
