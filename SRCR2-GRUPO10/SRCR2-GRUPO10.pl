@@ -30,8 +30,11 @@
 :- dynamic medico/4.
 :- dynamic seguro/3.
 :- dynamic excecao/1.
+:- dynamic nulo/1.
+:- dynamic conhecimentoPerfeito/1.
 
 :- dynamic '-'/1.
+:- dynamic '::'/2.
 
 % utente: IdUt,Nome,Idade,Cidade,Seguro-> {V,F,D}
 % serviço: IdServ,Descrição,Instituição,Cidade -> {V,F,D}
@@ -209,8 +212,8 @@ nulo(xpto024).
                      comprimento(S,1)).
 
 % Invariante Estrutural: nao permitir a insercao de conhecimento negativo repetido
-+(-utente(IU,N,I,C,IdS)) :: (solucoes(IU, -utente(IU,N,I,C,IdS), S),
-													comprimento(S, 1)).
+%+(-utente(IU,N,I,C,IdS)) :: (solucoes(IU, -utente(IU,N,I,C,IdS), S),
+													%comprimento(S, 1)).
 
 % Invariante Estrutural: a idade de cada utente tem de ser inteira e estar no intervalo [0,120]
 +utente(_,_,I,_,_) :: (integer(I),
@@ -313,16 +316,31 @@ nulo(xpto024).
 % UTENTE
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
+	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
+	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
 	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista),
-	removerLista(utente(Id,Nome,Idade,Morada,Seguro), Lista).
+	assert(utente(Id,Nome,Idade,Morada,Seguro)),
+	assert(conhecimentoPerfeito(Id)).
 
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
-    evolucao(utente(Id,Nome,Idade,Morada,Seguro)).
+	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
+	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
+    assert(utente(Id,Nome,Idade,Morada,Seguro)),
+	assert(conhecimentoPerfeito(Id)).
 
 evolucaoPerfeito(-utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(-utente(Id,Nome,Idade,Morada,Seguro), verdadeiro),
     evolucao(-utente(Id,Nome,Idade,Morada,Seguro)).
+
+
+removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
+	solucoes(conhecimentoImpreciso(Id), conhecimentoImpreciso(Id), Lista),
+	retractLista(Lista),
+	solucoes(excecao(utente(Id,Nome,Idade,Morada,Seguro)), excecao(utente(Id,Nome,Idade,Morada,Seguro)),
+			 Lista2),
+	retractLista(Lista2).
+
 
 % SERVICO
 evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
@@ -402,8 +420,7 @@ regressaoPerfeito(-Termo) :-
 
 evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	si(utente(IdUt, Nome, Idade, Morada,Seguro),falso),
-	assert((excecao(utente(Id,N,I,M,S)) :-
-	       utente(Id,N,I,Morada,S))),
+	assert((excecao(utente(Id,N,I,M,S)) :- utente(Id,N,I,Morada,S))),
 	assert(utente(IdUt, Nome, Idade, Morada, Seguro)),
 	assert(conhecimentoIncertoMorada(utente(IdUt,Morada))).
 
@@ -412,8 +429,7 @@ evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 
 evolucaoIncertoIdade(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	si(utente(IdUt, Nome, Idade, Morada,Seguro),falso),
-	assert((excecao(utente(Id,N,I,M,S)) :-
-	       utente(Id,N,Idade,M,S))),
+	assert((excecao(utente(Id,N,I,M,S)) :- utente(Id,N,Idade,M,S))),
 	assert(utente(IdUt, Nome, Idade, Morada, Seguro)),
 	assert(conhecimentoIncertoIdade(utente(IdUt,Idade))).
 
@@ -469,11 +485,31 @@ insereExcecoes([utente(IdUt, Nome, Idade, Morada, Seguro)|T]) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Evolucao de conhecimento interdito
 
-% Extensao do predicado evolucaoInterdito: Utente -> {V,F}
+% Extensao do predicado evolucaoInterditoIdade: Utente -> {V,F}
+
+evolucaoInterditoIdade(utente(IdUt, Nome, Idade, Morada, Seguro)) :-
+	testaConhecimento(IdUt),
+	assert(nulo(Idade)),
+	assert((excecao(utente(Id,N,I,M,S)) :- utente(Id,N,Idade,M,S))),
+	assert((+utente(Id,N,I,M,S) :: ( solucoes(Id,(utente(Id,_,Idade,_,_), nulo(Idade)),Lista),
+				       			   comprimento(S,0) ))),
+	assert(utente(IdUt,Nome,Idade,Morada,Seguro)).
+
+% Extensao do predicado evolucaoInterditoMorada: Utente -> {V,F}
+evolucaoInterditoMorada(utente(IdUt, Nome, Idade, Morada, Seguro)) :-
+	testaConhecimento(IdUt),
+	assert(nulo(Morada)),
+	assert((excecao(utente(Id,N,I,M,S)) :- utente(Id,N,I,Morada,S))),
+	assert((+utente(Id,N,I,M,S) :: ( solucoes(Id,(utente(Id,_,_,Morada,_), nulo(Morada)),Lista),
+				       			   comprimento(Lista,0) ))),
+	assert(utente(IdUt,Nome,Idade,Morada,Seguro)).
 
 
-
-
+testaConhecimento(IdUt) :-
+	si(conhecimentoPerfeito(IdUt),desconhecido),
+	si(conhecimentoImpreciso(IdUt),desconhecido),
+	si(conhecimentoIncertoIdade(IdUt,_),desconhecido),
+	si(conhecimentoIncertoMorada(IdUt,_),desconhecido).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
