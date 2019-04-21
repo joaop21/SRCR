@@ -203,20 +203,29 @@ nulo(xpto024).
 
 %-----------------UTENTE-----------------%
 
-% Invariante Estrutural:  nao permitir a insercao de conhecimento repetido
+% Invariante Estrutural:  nao permitir a insercao de conhecimento positivo repetido
 +utente(IU,_,_,_,_) :: (solucoes(IU, (utente(IU,_,_,_,_)), S),
                      comprimento(S,1)).
+
+% Invariante Estrutural: nao permitir a insercao de conhecimento negativo repetido
++(-utente(IU,N,I,C,IdS)) :: (solucoes(IU, -utente(IU,N,I,C,IdS), S),
+													comprimento(S, 1)).
 
 % Invariante Estrutural: a idade de cada utente tem de ser inteira e estar no intervalo [0,120]
 +utente(_,_,I,_,_) :: (integer(I),
                       I >= 0,
                       I =< 120).
 
+
 %-----------------SERVICO-----------------%
 
-% Invariante Estrutural: nao permitir a insercao de conhecimento repetido
+% Invariante Estrutural: nao permitir a insercao de conhecimento positivo repetido
 +servico(IS,_,_,_) :: (solucoes(IS, (servico( IS,_,_,_ )), S),
                       comprimento(S,1)).
+
+% Invariante Estrutural: nao permitir a insercao de conhecimento negativo repetido
++(-servico(IS,D,I,C)) :: (solucoes(IS, -servico(IS,D,I,C), S),
+													comprimento(S, 1)).
 
 % Invariante Estrutural: nao permitir a insercao de serviços que tenham a mesma descrição, na mesma instituição da mesma cidade
 +servico(_,D,I,C) :: (solucoes((D,I,C), servico(_,D,I,C),S),
@@ -243,9 +252,13 @@ nulo(xpto024).
 
 %-----------------MEDICO-----------------%
 
-% Invariante Estrutural: nao permitir a insercao de conhecimento repetido
+% Invariante Estrutural: nao permitir a insercao de conhecimento positivo repetido
 +medico(IM,_,_,_) :: (solucoes(IM, medico( IM,_,_,_ ),S),
                      comprimento( S,1 )).
+
+% Invariante Estrutural: nao permitir a insercao de conhecimento negativo repetido
++(-medico(IM,N,I,IS)) :: (solucoes(IM, -medico(IM,N,I,IS), S),
+													comprimento(S, 1)).
 
 % Invariante Estrutural: a idade de cada medico a exercer tem de ser inteira e estar no intervalo [25,70]
 +medico(_,_,I,_) :: (integer(I),
@@ -258,10 +271,13 @@ nulo(xpto024).
 
 %-----------------SEGURO-----------------%
 
-% Invariante Estrutural:  nao permitir a insercao de conhecimento repetido
-+seguro(IdSeg,_) :: (solucoes(IdSeg, (seguro(IdSeg,_)), S),
+% Invariante Estrutural:  nao permitir a insercao de conhecimento positivo repetido
++seguro(IdSeg,_,_) :: (solucoes(IdSeg, (seguro(IdSeg,_,_)), S),
                     comprimento(S,1)).
 
+% Invariante Estrutural: nao permitir a insercao de conhecimento negativo repetido
++(-seguro(IdSeg,D,T)) :: (solucoes(IdSeg, -seguro(IdSeg,D,T), S),
+													comprimento(S, 1)).
 
 
 
