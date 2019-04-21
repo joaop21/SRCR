@@ -308,17 +308,19 @@ nulo(xpto024).
 
 %--------------------------EVOLUCAO E REGRESSAO DO CONHECIMENTO--------------------------%
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado evolucaoPerfeito: evolucaoPerfeito -> {V,F}
+%-----------------EVOLUCAO PERFEITO-----------------%
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Evolucao de conhecimento perfeito que remove conhecimento imperfeito
+
+% Extensao do predicado evolucaoPerfeito: Utente -> {V,F}
 
 % UTENTE
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
 	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
-	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista),
+	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista), % NECESSÁRIO ??????????????
 	assert(utente(Id,Nome,Idade,Morada,Seguro)),
 	assert(conhecimentoPerfeito(Id)).
 
@@ -326,20 +328,12 @@ evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
 	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
-    assert(utente(Id,Nome,Idade,Morada,Seguro)),
+  assert(utente(Id,Nome,Idade,Morada,Seguro)),
 	assert(conhecimentoPerfeito(Id)).
 
 evolucaoPerfeito(-utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(-utente(Id,Nome,Idade,Morada,Seguro), verdadeiro),
-    evolucao(-utente(Id,Nome,Idade,Morada,Seguro)).
-
-
-removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
-	solucoes(conhecimentoImpreciso(Id), conhecimentoImpreciso(Id), Lista),
-	retractLista(Lista),
-	solucoes(excecao(utente(Id,Nome,Idade,Morada,Seguro)), excecao(utente(Id,Nome,Idade,Morada,Seguro)),
-			 Lista2),
-	retractLista(Lista2).
+  evolucao(-utente(Id,Nome,Idade,Morada,Seguro)).
 
 
 % SERVICO
@@ -356,6 +350,7 @@ evolucaoPerfeito(-servico(Id,Descricao,Instituicao,Cidade)):-
 	si(-servico(Id,Descricao,Instituicao,Cidade), verdadeiro),
     evolucao(-servico(Id,Descricao,Instituicao,Cidade)).
 
+
 % CONSULTA
 evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), desconhecido),
@@ -369,6 +364,7 @@ evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 evolucaoPerfeito(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
 	si(-consulta(Data,IdUtente,IdServico,Custo,IdMedico), verdadeiro),
     evolucao(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)).
+
 
 % MÉDICO
 evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
@@ -384,6 +380,7 @@ evolucaoPerfeito(-medico(IdMedico,Nome,Idade,IdServico)):-
 	si(-medico(IdMedico,Nome,Idade,IdServico), verdadeiro),
     evolucao(-medico(IdMedico,Nome,Idade,IdServico)).
 
+
 % SEGURO
 evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
 	si(seguro(IdSeguro,Descricao,Taxa), desconhecido),
@@ -398,10 +395,14 @@ evolucaoPerfeito(-seguro(IdSeguro,Descricao,Taxa)):-
 	si(-seguro(IdSeguro,Descricao,Taxa), verdadeiro),
     evolucao(-seguro(IdSeguro,Descricao,Taxa)).
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado regressaoPerfeito: regressaoPerfeito -> {V,F}
 
+
+%-----------------REGRESSAO PERFEITO-----------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Regressao de conhecimento perfeito que remove conhecimento perfeito
+
+% Extensao do predicado regressaoPerfeito: Termo -> {V,F}
 
 regressaoPerfeito(Termo) :-
     si(Termo,verdadeiro),
@@ -412,10 +413,12 @@ regressaoPerfeito(-Termo) :-
     regressao(-Termo).
 
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Evolucao de conhecimento incerto
 
+%-----------------EVOLUCAO CONHECIMENTO INCERTO-----------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Evolucao de conhecimento incerto acerca da morada dum utente
+
 % Extensao do predicado evolucaoIncertoMorada: Utente -> {V,F}
 
 evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
@@ -424,7 +427,10 @@ evolucaoIncertoMorada(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	assert(utente(IdUt, Nome, Idade, Morada, Seguro)),
 	assert(conhecimentoIncertoMorada(utente(IdUt,Morada))).
 
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Evolucao de conhecimento incerto acerca da morada dum utente
+
 % Extensao do predicado evolucaoIncertoIdade: Utente -> {V,F}
 
 evolucaoIncertoIdade(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
@@ -434,9 +440,10 @@ evolucaoIncertoIdade(utente(IdUt, Nome, Idade, Morada,Seguro)) :-
 	assert(conhecimentoIncertoIdade(utente(IdUt,Idade))).
 
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Evolucao de conhecimento impreciso
 
+%-----------------EVOLUCAO CONHECIMENTO IMPRECISO-----------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado evolucaoImpreciso: [Utente] -> {V,F}
 
 evolucaoImpreciso([utente(IdUt, Nome, Idade, Morada, Seguro)|T]) :-
@@ -462,19 +469,6 @@ nenhumPerfeito([H|T]) :-
 	nenhumPerfeito(T).
 
 
-removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
-	conhecimentoIncertoIdade(utente(IdUt,I)),
-	retract((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
-	retract(utente(IdUt, _, _ , _, _)),
-	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
-removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
-	conhecimentoIncertoMorada(utente(IdUt,I)),
-	retract((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),
-	retract(utente(IdUt, _, _ , _, _)),
-	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
-removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)).
-
-
 insereExcecoes([]).
 insereExcecoes([utente(IdUt, Nome, Idade, Morada, Seguro)|T]) :-
 	assert(excecao(utente(IdUt, Nome, Idade, Morada, Seguro))),
@@ -482,9 +476,10 @@ insereExcecoes([utente(IdUt, Nome, Idade, Morada, Seguro)|T]) :-
 	assert(conhecimentoImpreciso(utente(IdUt))).
 
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Evolucao de conhecimento interdito
 
+%-----------------EVOLUCAO CONHECIMENTO INTERDITO-----------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado evolucaoInterditoIdade: Utente -> {V,F}
 
 evolucaoInterditoIdade(utente(IdUt, Nome, Idade, Morada, Seguro)) :-
@@ -492,10 +487,13 @@ evolucaoInterditoIdade(utente(IdUt, Nome, Idade, Morada, Seguro)) :-
 	assert(nulo(Idade)),
 	assert((excecao(utente(Id,N,I,M,S)) :- utente(Id,N,Idade,M,S))),
 	assert((+utente(Id,N,I,M,S) :: ( solucoes(Id,(utente(Id,_,Idade,_,_), nulo(Idade)),Lista),
-				       			   comprimento(S,0) ))),
+				       			   comprimento(S,0) ))), % NAO DEVIA SER Lista ????????????
 	assert(utente(IdUt,Nome,Idade,Morada,Seguro)).
 
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado evolucaoInterditoMorada: Utente -> {V,F}
+
 evolucaoInterditoMorada(utente(IdUt, Nome, Idade, Morada, Seguro)) :-
 	testaConhecimento(IdUt),
 	assert(nulo(Morada)),
@@ -510,6 +508,43 @@ testaConhecimento(IdUt) :-
 	si(conhecimentoImpreciso(IdUt),desconhecido),
 	si(conhecimentoIncertoIdade(IdUt,_),desconhecido),
 	si(conhecimentoIncertoMorada(IdUt,_),desconhecido).
+
+
+
+%-----------------REGRESSAO CONHECIMENTO IMPRECISO-----------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removerConhecimentoImpreciso: Utente -> {V,F}
+
+removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
+	solucoes(conhecimentoImpreciso(Id), conhecimentoImpreciso(Id), Lista),
+	retractLista(Lista),
+	solucoes(excecao(utente(Id,Nome,Idade,Morada,Seguro)), excecao(utente(Id,Nome,Idade,Morada,Seguro)),
+			 Lista2),
+	retractLista(Lista2).
+
+
+
+%-----------------REGRESSAO CONHECIMENTO INCERTO-----------------%
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removerConhecimentoIncerto: Utente -> {V,F}
+
+removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
+	conhecimentoIncertoIdade(utente(IdUt,I)),
+	retract((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
+	retract(utente(IdUt, _, _ , _, _)),
+	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
+removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
+	conhecimentoIncertoMorada(utente(IdUt,I)),
+	retract((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),   % NAO DEVIA SER Morada ????????????
+	retract(utente(IdUt, _, _ , _, _)),
+	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
+removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)).
+
+
+
+%-----------------PREDICADOS PROVENIENTES DA PRIMEIRA FASE-----------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolucao do conhecimento
@@ -543,6 +578,7 @@ construir(S,S).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção do conhecimento
+
 insercao(Termo) :-
     assert(Termo).
 insercao(Termo) :-
@@ -550,6 +586,7 @@ insercao(Termo) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a remoção do conhecimento
+
 remover(Termo) :-
     retract(Termo).
 remover(Termo) :-
@@ -557,6 +594,7 @@ remover(Termo) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a remoção duma lista de conhecimento
+
 removerLista( Termo,L ) :-
     retractLista( L ),
     evolucao(Termo).
@@ -575,6 +613,7 @@ assertLista(L).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que realiza o teste do conhecimento
+
 teste([]).
 teste([R|LR]) :-
     R,
