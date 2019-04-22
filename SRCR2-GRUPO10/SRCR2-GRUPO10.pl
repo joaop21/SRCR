@@ -320,80 +320,20 @@ evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
 	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
-	solucoes(utente(Id,N,I,M,S), utente(Id,N,I,M,S), Lista), % NECESSÁRIO ??????????????
-	assert(utente(Id,Nome,Idade,Morada,Seguro)),
-	assert(conhecimentoPerfeito(Id)).
+	evolucao(utente(Id,Nome,Idade,Morada,Seguro)),
+	evolucao(conhecimentoPerfeito(Id)).
 
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
 	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
-  assert(utente(Id,Nome,Idade,Morada,Seguro)),
-	assert(conhecimentoPerfeito(Id)).
+    evolucao(utente(Id,Nome,Idade,Morada,Seguro)),
+	evolucao(conhecimentoPerfeito(Id)).
 
 evolucaoPerfeito(-utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(-utente(Id,Nome,Idade,Morada,Seguro), verdadeiro),
-  evolucao(-utente(Id,Nome,Idade,Morada,Seguro)).
+    evolucao(-utente(Id,Nome,Idade,Morada,Seguro)).
 
-
-% SERVICO
-evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
-	si(servico(Id,Descricao,Instituicao,Cidade), desconhecido),
-	solucoes(servico(Id,D,I,C), servico(Id,D,I,C), Lista),
-	removerLista(servico(Id,Descricao,Instituicao,Cidade), Lista).
-
-evolucaoPerfeito(servico(Id,Descricao,Instituicao,Cidade)):-
-	si(servico(Id,Descricao,Instituicao,Cidade), falso),
-    evolucao(servico(Id,Descricao,Instituicao,Cidade)).
-
-evolucaoPerfeito(-servico(Id,Descricao,Instituicao,Cidade)):-
-	si(-servico(Id,Descricao,Instituicao,Cidade), verdadeiro),
-    evolucao(-servico(Id,Descricao,Instituicao,Cidade)).
-
-
-% CONSULTA
-evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
-	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), desconhecido),
-	solucoes(consulta(Data,IdUtente,IdServico,Custo,IdMedico), consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista),
-	removerLista(consulta(Data,IdUtente,IdServico,Custo,IdMedico), Lista).
-
-evolucaoPerfeito(consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
-	si(consulta(Data,IdUtente,IdServico,Custo,IdMedico), falso),
-    evolucao(consulta(Data,IdUtente,IdServico,Custo,IdMedico)).
-
-evolucaoPerfeito(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)):-
-	si(-consulta(Data,IdUtente,IdServico,Custo,IdMedico), verdadeiro),
-    evolucao(-consulta(Data,IdUtente,IdServico,Custo,IdMedico)).
-
-
-% MÉDICO
-evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
-	si(medico(IdMedico,Nome,Idade,IdServico), desconhecido),
-	solucoes(medico(IdMedico,N,I,IdS), medico(IdMedico,N,I,IdS), Lista),
-	removerLista(medico(IdMedico,Nome,Idade,IdServico), Lista).
-
-evolucaoPerfeito(medico(IdMedico,Nome,Idade,IdServico)):-
-	si(medico(IdMedico,Nome,Idade,IdServico), falso),
-    evolucao(medico(IdMedico,Nome,Idade,IdServico)).
-
-evolucaoPerfeito(-medico(IdMedico,Nome,Idade,IdServico)):-
-	si(-medico(IdMedico,Nome,Idade,IdServico), verdadeiro),
-    evolucao(-medico(IdMedico,Nome,Idade,IdServico)).
-
-
-% SEGURO
-evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
-	si(seguro(IdSeguro,Descricao,Taxa), desconhecido),
-	solucoes(seguro(IdSeguro,D,T), seguro(IdSeguro,D,T), Lista),
-	removerLista(seguro(IdSeguro,Descricao,Taxa), Lista).
-
-evolucaoPerfeito(seguro(IdSeguro,Descricao,Taxa)):-
-	si(seguro(IdSeguro,Descricao,Taxa), falso),
-    evolucao(seguro(IdSeguro,Descricao,Taxa)).
-
-evolucaoPerfeito(-seguro(IdSeguro,Descricao,Taxa)):-
-	si(-seguro(IdSeguro,Descricao,Taxa), verdadeiro),
-    evolucao(-seguro(IdSeguro,Descricao,Taxa)).
 
 
 
@@ -487,7 +427,7 @@ evolucaoInterditoIdade(utente(IdUt, Nome, Idade, Morada, Seguro)) :-
 	assert(nulo(Idade)),
 	assert((excecao(utente(Id,N,I,M,S)) :- utente(Id,N,Idade,M,S))),
 	assert((+utente(Id,N,I,M,S) :: ( solucoes(Id,(utente(Id,_,Idade,_,_), nulo(Idade)),Lista),
-				       			   comprimento(S,0) ))), % NAO DEVIA SER Lista ????????????
+				       			   comprimento(Lista,0) ))),
 	assert(utente(IdUt,Nome,Idade,Morada,Seguro)).
 
 
@@ -511,35 +451,35 @@ testaConhecimento(IdUt) :-
 
 
 
-%-----------------REGRESSAO CONHECIMENTO IMPRECISO-----------------%
+%-----------------REMOCAO CONHECIMENTO IMPRECISO-----------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removerConhecimentoImpreciso: Utente -> {V,F}
 
 removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
 	solucoes(conhecimentoImpreciso(Id), conhecimentoImpreciso(Id), Lista),
-	retractLista(Lista),
-	solucoes(excecao(utente(Id,Nome,Idade,Morada,Seguro)), excecao(utente(Id,Nome,Idade,Morada,Seguro)),
+	removerLista(Lista),
+	solucoes(excecao(utente(Id,_,_,_,_)), excecao(utente(Id,_,_,_,_)),
 			 Lista2),
-	retractLista(Lista2).
+	removerLista(Lista2).
 
 
 
-%-----------------REGRESSAO CONHECIMENTO INCERTO-----------------%
+%-----------------REMOCAO CONHECIMENTO INCERTO-----------------%
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removerConhecimentoIncerto: Utente -> {V,F}
 
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
 	conhecimentoIncertoIdade(utente(IdUt,I)),
-	retract((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
-	retract(utente(IdUt, _, _ , _, _)),
-	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
+	regressao((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
+	regressao(utente(IdUt, _, _ , _, _)),
+	regressao(conhecimentoIncertoIdade(utente(IdUt, _))).
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
 	conhecimentoIncertoMorada(utente(IdUt,I)),
-	retract((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),   % NAO DEVIA SER Morada ????????????
-	retract(utente(IdUt, _, _ , _, _)),
-	retract(conhecimentoIncertoIdade(utente(IdUt, _))).
+	regressao((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),
+	regressao(utente(IdUt, _, _ , _, _)),
+	regressao(conhecimentoIncertoIdade(utente(IdUt, _))).
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)).
 
 
@@ -595,10 +535,9 @@ remover(Termo) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a remoção duma lista de conhecimento
 
-removerLista( Termo,L ) :-
-    retractLista( L ),
-    evolucao(Termo).
-removerLista( Termo,L) :-
+removerLista( L ) :-
+    retractLista( L ).
+removerLista( L ) :-
     assertLista( L ),!,fail.
 
 retractLista([]).
