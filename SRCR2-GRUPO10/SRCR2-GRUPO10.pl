@@ -32,6 +32,9 @@
 :- dynamic excecao/1.
 :- dynamic nulo/1.
 :- dynamic conhecimentoPerfeito/1.
+:- dynamic conhecimentoImpreciso/1.
+:- dynamic conhecimentoIncertoIdade/1.
+:- dynamic conhecimentoIncertoMorada/1.
 
 :- dynamic '-'/1.
 :- dynamic '::'/2.
@@ -164,6 +167,7 @@ excecao( servico(IDS,D,I,C) ) :-
 
 % Não sabemos qual é a cidade onde reside o Utente 11 chamado Alfredo, com 86 anos e portador do seguro 2
 utente(11,alfredo,86,xpto022,2).
+conhecimentoIncertoMorada(utente(11,xpto022)).
 excecao( utente(IU,N,I,C,IdS) ) :-
          utente(IU,N,I,xpto022,IdS).
 
@@ -476,10 +480,10 @@ removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
 	regressao(utente(IdUt, _, _ , _, _)),
 	regressao(conhecimentoIncertoIdade(utente(IdUt, _))).
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
-	conhecimentoIncertoMorada(utente(IdUt,I)),
+	conhecimentoIncertoMorada(utente(IdUt,M)),
 	regressao((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),
 	regressao(utente(IdUt, _, _ , _, _)),
-	regressao(conhecimentoIncertoIdade(utente(IdUt, _))).
+	regressao(conhecimentoIncertoMorada(utente(IdUt, _))).
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)).
 
 
