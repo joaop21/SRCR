@@ -323,14 +323,12 @@ nulo(xpto024).
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), desconhecido),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
-	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
 	evolucao(utente(Id,Nome,Idade,Morada,Seguro)),
 	evolucao(conhecimentoPerfeito(Id)).
 
 evolucaoPerfeito(utente(Id,Nome,Idade,Morada,Seguro)):-
 	si(utente(Id,Nome,Idade,Morada,Seguro), falso),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)),
-	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)),
     evolucao(utente(Id,Nome,Idade,Morada,Seguro)),
 	evolucao(conhecimentoPerfeito(Id)).
 
@@ -461,11 +459,13 @@ testaConhecimento(IdUt) :-
 % Extensao do predicado removerConhecimentoImpreciso: Utente -> {V,F}
 
 removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
-	solucoes(conhecimentoImpreciso(Id), conhecimentoImpreciso(Id), Lista),
-	removerLista(Lista),
-	solucoes(excecao(utente(Id,_,_,_,_)), excecao(utente(Id,_,_,_,_)),
-			 Lista2),
-	removerLista(Lista2).
+	retract(excecao(utente(Id,_,_,_,_))),
+	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)).
+removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
+	retract(impreciso(utente(Id))),
+	removerImpreciso(utente(Id,Nome,Idade,Morada)).
+removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
+	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)).
 
 
 
@@ -476,12 +476,12 @@ removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
 
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
 	conhecimentoIncertoIdade(utente(IdUt,I)),
-	regressao((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
+	regressaoQuery((excecao(utente(Id,N,Ida,M,S)) :- utente(Id,N,I,M,S))),
 	regressao(utente(IdUt, _, _ , _, _)),
 	regressao(conhecimentoIncertoIdade(utente(IdUt, _))).
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)) :-
 	conhecimentoIncertoMorada(utente(IdUt,M)),
-	regressao((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),
+	regressaoQuery((excecao(utente(Id,N,I,Mora,S)) :- utente(Id,N,I,M,S))),
 	regressao(utente(IdUt, _, _ , _, _)),
 	regressao(conhecimentoIncertoMorada(utente(IdUt, _))).
 removerConhecimentoIncerto(utente(IdUt,Nome,Idade,Morada,Seguro)).
@@ -506,6 +506,11 @@ regressao(Termo) :-
 	  solucoes(Invariante,-Termo::Invariante,Lista),
 	  remover(Termo),
       teste(Lista).
+
+regressaoQuery(Termo) :-
+	solucoes(Invariante,-Termo::Invariante,Lista),
+	remover(Termo),
+	teste(Lista).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite encontrar as provas
