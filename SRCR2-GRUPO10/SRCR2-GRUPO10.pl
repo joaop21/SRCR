@@ -462,7 +462,7 @@ removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
 	retract(excecao(utente(Id,_,_,_,_))),
 	removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)).
 removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
-	retract(impreciso(utente(Id))),
+	retract(conhecimentoImpreciso(utente(Id))),
 	removerImpreciso(utente(Id,Nome,Idade,Morada)).
 removerConhecimentoImpreciso(utente(Id,Nome,Idade,Morada,Seguro)) :-
 	removerConhecimentoIncerto(utente(Id,Nome,Idade,Morada,Seguro)).
